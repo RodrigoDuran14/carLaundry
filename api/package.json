@@ -1,0 +1,28 @@
+{
+  "name": "carlaundry",
+  "version": "1.0.0",
+  "description": "app para administrar turnos de lavadero de autos",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RodrigoDuran14/carLaundry.git"
+  },
+  "author": "RodrigoDuran14",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RodrigoDuran14/carLaundry/issues"
+  },
+  "homepage": "https://github.com/RodrigoDuran14/carLaundry#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.2"
+  }
+}
