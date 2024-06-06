@@ -117,10 +117,9 @@ const updateClient = async (req, res, next) => {
     const { id } = req.params;
     const update = req.body;
 
-    const updateClient = await ClienteModel.findByIdAndUpdate(
-      id,
-      { $set: update }
-    );
+    const updateClient = await ClienteModel.findByIdAndUpdate(id, {
+      $set: update,
+    });
 
     if (!updateClient) {
       return res.status(404).send({ error: "Cliente no encontrado" });
@@ -132,22 +131,25 @@ const updateClient = async (req, res, next) => {
   }
 };
 
-const updateActiveClient = async (req,res,next) =>{
-  const { id } = req.params;
-  
-  const client = await ClienteModel.findById(id);
+const updateActiveClient = async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
-  if (!client) {
-    return res.status(404).send({ error: "Cliente no encontrado" });
+    const client = await ClienteModel.findById(id);
+
+    if (!client) {
+      return res.status(404).send({ error: "Cliente no encontrado" });
+    }
+
+    client.activo = !client.activo;
+
+    await client.save();
+
+    res.status(200).send(client);
+  } catch (error) {
+    next(error);
   }
-
-  client.activo = !client.activo
-
-  await client.save();
-
-  res.status(200).send(client);
-
-}
+};
 
 module.exports = {
   getClientList,
@@ -156,5 +158,5 @@ module.exports = {
   getClientsByName,
   getClientsByVehiculo,
   updateClient,
-  updateActiveClient
+  updateActiveClient,
 };
