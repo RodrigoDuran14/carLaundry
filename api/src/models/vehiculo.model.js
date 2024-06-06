@@ -1,41 +1,34 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const vehiculoSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: () => {
-      return new mongoose.Types.ObjectId().toString();
-    },
-    required: true,
-  },
   marca: {
     type: String,
-    required: true,
+    required: [true, "El campo Marca es obligatorio"],
   },
   modelo: {
     type: String,
-    required: true,
+    required: [true, "El campo Modelo es obligatorio"],
   },
   matricula: {
     type: String,
-    required: true,
+    required: [true, "El campo Matricula es obligatorio"],
   },
   color: {
     type: String,
-    required: true,
+    required: [true, "El campo Color es obligatorio"],
   },
   tipo: {
     type: String,
     enum: ["Auto", "Camioneta", "Furgon", "Moto", "Camion"],
-    required: true,
+    required: [true, "El campo Tipo es obligatorio"],
   },
   activo: {
     type: Boolean,
     required: true,
-    default: true
-  }
-}) 
+    default: true,
+  },
+});
 
-const Vehiculo = mongoose.model("Vehiculo", vehiculoSchema);
+const VehiculosModel = mongoose.model("Vehiculos", vehiculoSchema);
 
-module.exports = Vehiculo;
+module.exports = VehiculosModel;

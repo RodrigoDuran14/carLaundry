@@ -1,13 +1,6 @@
 const mongoose = require("mongoose");
 
 const tiposDeLavadoSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: () => {
-      return new mongoose.Types.ObjectId().toString();
-    },
-    required: true,
-  },
   titulo: {
     type: String,
     required: true,
@@ -27,6 +20,6 @@ const tiposDeLavadoSchema = new mongoose.Schema({
   },
 });
 
-const TiposDeLavados = mongoose.model("TiposDeLavados", tiposDeLavadoSchema);
+const TiposDeLavadosModel = mongoose.model("TiposDeLavados", tiposDeLavadoSchema);
 
-module.exports = TiposDeLavados;
+module.exports = TiposDeLavadosModel;

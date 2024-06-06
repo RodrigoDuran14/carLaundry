@@ -1,13 +1,6 @@
 const mongoose = require("mongoose");
 
 const clienteSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: () => {
-      return new mongoose.Types.ObjectId().toString();
-    },
-    required: true,
-  },
   nombre: {
     type: String,
     required: true,
@@ -16,10 +9,10 @@ const clienteSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  vehiculos: [
+  vehiculo: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Vehiculo",
+      ref: "Vehiculos",
       required: true,
     },
   ],
@@ -30,40 +23,16 @@ const clienteSchema = new mongoose.Schema({
   mail: {
     type: String,
   },
-  horarioInicio: {
-    type: Date,
-    default: Date,
-    required: true,
-  },
-  horarioFin: {
-    type: Date,
-    required: true,
-  },
-  lavador: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Empleado",
-    required: true,
-  },
-  estadoDelLavado: {
-    type: String,
-    enum: ["Pendiente", "En progreso", "Terminado"],
-    required: true,
-    default: "pendiente",
-  },
   activo: {
     type: Boolean,
     default: true,
     required: true,
   },
-  tipoLavado: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "TiposDeLavados",
-      required: true,
-    },
-  ],
+},{
+  timestamps:true,
+  versionKey:false
 });
 
-const Cliente = mongoose.model("Cliente", clienteSchema);
+const ClienteModel = mongoose.model("Cliente", clienteSchema);
 
-module.exports = Cliente;
+module.exports = ClienteModel;

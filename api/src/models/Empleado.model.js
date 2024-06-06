@@ -1,13 +1,6 @@
 const mongoose = require("mongoose");
 
 const empleadoSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: () => {
-      return new mongoose.Types.ObjectId().toString();
-    },
-    required: true,
-  },
   nombre: {
     type: String,
     required: true,
@@ -42,6 +35,6 @@ const empleadoSchema = new mongoose.Schema({
   },
 });
 
-const Empleados = mongoose.model("Empleados", empleadoSchema);
+const EmpleadosModel = mongoose.model("Empleados", empleadoSchema);
 
-module.exports = Empleados;
+module.exports = EmpleadosModel;
