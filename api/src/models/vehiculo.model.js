@@ -12,6 +12,7 @@ const vehiculoSchema = new mongoose.Schema({
   matricula: {
     type: String,
     required: [true, "El campo Matricula es obligatorio"],
+    unique: true
   },
   color: {
     type: String,

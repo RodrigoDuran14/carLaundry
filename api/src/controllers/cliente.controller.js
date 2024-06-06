@@ -23,17 +23,55 @@ const getClientById = async (req,res, next)=>{
   }
 }
 
-const getClientByName = async (req,res,next) =>{
+const getClientsByName = async (req,res,next) =>{
+  try {
+    const {nombre}= req.query
 
+    let query = {}
+    if(nombre) query.nombre = new RegExp(nombre, 'i')
+
+    const cliente = await ClienteModel.find(query).populate('vehiculo', 'marca modelo matricula tipo color')
+    res.status(200).send(cliente)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getClientsByVehiculo = async (req,res,next)=>{
+  try {
+    const {marca, modelo, matricula} = req.query
+
+    let vehiculoQuery = {}
+    if(marca) vehiculoQuery.marca = new RegExp(marca, 'i')
+    if(modelo) vehiculoQuery.modelo = new RegExp(modelo, 'i')
+    if(matricula) vehiculoQuery.matricula = new RegExp(matricula, 'i')
+
+    if(Object.keys(vehiculoQuery).length === 0){
+      return res.status(400).send({error: 'Se requiere al menos un parámetro de búsqueda (marca, modelo o matricula)'})
+    }
+
+    const vehiculos = await VehiculosModel.find(vehiculoQuery)
+    const vehiculoId = vehiculos.map(v=>v._id)
+
+    if(vehiculoId.length === 0){
+      return res.status(404).send({error: 'No se encontraron vehículos con los parámetros proporcionados'})
+    }
+
+    const clientes = await ClienteModel.find({vehiculo: {$in: vehiculoId}}).populate('vehiculo', 'marca modelo matricula tipo color')
+
+    res.status(200).send(clientes)
+  } catch (error) {
+    next(error)
+  }
 }
 
 const postClient = async (req,res, next)=>{
   try {
     const {nombre, dni, vehiculoId, celular, mail} = req.body
 
-    const vehiculo = await VehiculosModel.findById(vehiculoId)
+    const vehiculo = await VehiculosModel.find({_id: vehiculoId})
     if(!vehiculo){
-      return res.status(404).send({error: 'vehiculo no encontrado'})
+      return res.status(404).send({error: 'Uno o mas vehiculos no encontrados'})
     }
 
     if(!nombre, !dni, !vehiculo, !celular){
@@ -55,4 +93,4 @@ const postClient = async (req,res, next)=>{
   }
 }
 
-module.exports = { getClientList, getClientById, postClient };
+module.exports = { getClientList, getClientById, postClient, getClientsByName, getClientsByVehiculo };
