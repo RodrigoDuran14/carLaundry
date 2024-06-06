@@ -22,7 +22,6 @@ const postVehiculo = async (req, res, next) => {
 const getVehiculoList = async (req, res, next) => {
   try {
     const allVehiculo = await VehiculosModel.find();
-    console.log("vehiculo list");
 
     return res.status(200).send(allVehiculo);
   } catch (error) {
@@ -100,7 +99,7 @@ const updateActiveVehiculo = async (req, res, next) => {
     const vehiculo = await VehiculosModel.findById(id);
 
     if (!vehiculo) {
-      return res.status(404).send({ error: "Cliente no encontrado" });
+      return res.status(404).send({ error: "Vehiculo no encontrado" });
     }
 
     vehiculo.activo = !vehiculo.activo;
