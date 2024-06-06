@@ -18,6 +18,9 @@ const tiposDeLavadoSchema = new mongoose.Schema({
     default: true,
     required: true,
   },
+},{
+  timestamps:true,
+  versionKey:false
 });
 
 const TiposDeLavadosModel = mongoose.model("TiposDeLavados", tiposDeLavadoSchema);

@@ -33,6 +33,9 @@ const empleadoSchema = new mongoose.Schema({
     default: true,
     required: true,
   },
+},{
+  timestamps:true,
+  versionKey:false
 });
 
 const EmpleadosModel = mongoose.model("Empleados", empleadoSchema);

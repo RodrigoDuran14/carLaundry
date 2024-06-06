@@ -28,6 +28,9 @@ const vehiculoSchema = new mongoose.Schema({
     required: true,
     default: true,
   },
+},{
+  timestamps:true,
+  versionKey:false
 });
 
 const VehiculosModel = mongoose.model("Vehiculos", vehiculoSchema);

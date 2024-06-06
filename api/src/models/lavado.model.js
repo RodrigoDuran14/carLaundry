@@ -40,4 +40,7 @@ const lavadoSchema = new mongoose.Schema({
     default: true,
     required: true,
   },
+},{
+  timestamps:true,
+  versionKey:false
 })
