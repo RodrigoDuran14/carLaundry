@@ -118,5 +118,5 @@ module.exports = {
   getVehiculoById,
   findVehiculo,
   updateVehiculo,
-  updateActiveVehiculo
+  updateActiveVehiculo,
 };

@@ -38,13 +38,14 @@ const getTiposLavadoById = async (req, res, next) => {
   }
 };
 
-const findTiposLavado = async (req,res,next)=>{
+const findTiposLavado = async (req, res, next) => {
   try {
-    const {titulo, descripcion, precio} = req.query
+    const { titulo, descripcion, precio } = req.query;
 
-    let tiposLavadoQuery = {}
+    let tiposLavadoQuery = {};
     if (titulo) tiposLavadoQuery.titulo = new RegExp(titulo, "i");
-    if (descripcion) tiposLavadoQuery.descripcion = new RegExp(descripcion, "i");
+    if (descripcion)
+      tiposLavadoQuery.descripcion = new RegExp(descripcion, "i");
     if (precio) tiposLavadoQuery.precio = new RegExp(precio, "i");
 
     if (Object.keys(tiposLavadoQuery).length === 0) {
@@ -54,39 +55,42 @@ const findTiposLavado = async (req,res,next)=>{
       });
     }
 
-    const tiposLavado = await TiposDeLavadosModel.find(tiposLavadoQuery)
+    const tiposLavado = await TiposDeLavadosModel.find(tiposLavadoQuery);
     const tiposLavadoId = tiposLavado.map((t) => t._id);
 
     if (tiposLavadoId.length === 0) {
       return res.status(404).send({
-        error: "No se encontraron tipos de lavado con los parámetros proporcionados",
+        error:
+          "No se encontraron tipos de lavado con los parámetros proporcionados",
       });
     }
 
-    res.status(200).send(tiposLavado)
+    res.status(200).send(tiposLavado);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-const updateTiposLavado = async (req,res,next)=>{
+const updateTiposLavado = async (req, res, next) => {
   try {
-    const {id} = req.params
-    const update = req.body
+    const { id } = req.params;
+    const update = req.body;
 
-    const updateTiposLavado = await TiposDeLavadosModel.findByIdAndUpdate(id, {$set: update})
+    const updateTiposLavado = await TiposDeLavadosModel.findByIdAndUpdate(id, {
+      $set: update,
+    });
 
-    if(!updateTiposLavado){
-      return res.status(404).send({error: "Tipo de lavado no encontrado"})
+    if (!updateTiposLavado) {
+      return res.status(404).send({ error: "Tipo de lavado no encontrado" });
     }
 
-    res.status(200).send(update)
+    res.status(200).send(update);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-const updateActiveTiposLavado = async (req,res,next)=>{
+const updateActiveTiposLavado = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -102,8 +106,15 @@ const updateActiveTiposLavado = async (req,res,next)=>{
 
     res.status(200).send(tiposLavado);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-module.exports = { postTipoLavado, getTiposLavadoList, getTiposLavadoById, findTiposLavado, updateTiposLavado, updateActiveTiposLavado };
+module.exports = {
+  postTipoLavado,
+  getTiposLavadoList,
+  getTiposLavadoById,
+  findTiposLavado,
+  updateTiposLavado,
+  updateActiveTiposLavado,
+};
