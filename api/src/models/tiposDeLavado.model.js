@@ -3,15 +3,15 @@ const mongoose = require("mongoose");
 const tiposDeLavadoSchema = new mongoose.Schema({
   titulo: {
     type: String,
-    required: true,
+    required: [true, "El campo Titulo es obligatorio"],
   },
   descripcion: {
     type: String,
-    required: true,
+    required: [true, "El campo Descripcion es obligatorio"],
   },
   precio: {
     type: Number,
-    required: true,
+    required: [true, "El campo Precio es obligatorio"],
   },
   activo: {
     type: Boolean,

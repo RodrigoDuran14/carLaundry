@@ -21,7 +21,9 @@ const empleadoSchema = new mongoose.Schema({
     type: String,
   },
   lavados: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lavados",
+    required: true
   },
   admin: {
     type: Boolean,
