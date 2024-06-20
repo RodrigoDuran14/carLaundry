@@ -40,18 +40,17 @@ const getTiposLavadoById = async (req, res, next) => {
 
 const findTiposLavado = async (req, res, next) => {
   try {
-    const { titulo, descripcion, precio } = req.query;
+    const { titulo, descripcion } = req.query;
 
     let tiposLavadoQuery = {};
     if (titulo) tiposLavadoQuery.titulo = new RegExp(titulo, "i");
     if (descripcion)
       tiposLavadoQuery.descripcion = new RegExp(descripcion, "i");
-    if (precio) tiposLavadoQuery.precio = new RegExp(precio, "i");
 
     if (Object.keys(tiposLavadoQuery).length === 0) {
       return res.status(400).send({
         error:
-          "Se requiere al menos un parámetro de búsqueda (titulo, descripcion o precio)",
+          "Se requiere al menos un parámetro de búsqueda (titulo, descripcion)",
       });
     }
 

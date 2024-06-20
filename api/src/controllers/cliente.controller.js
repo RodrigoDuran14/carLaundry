@@ -30,10 +30,12 @@ const getClientById = async (req, res, next) => {
 
 const getClientsByName = async (req, res, next) => {
   try {
-    const { nombre } = req.query;
+    const { nombre, dni, celular } = req.query;
 
     let query = {};
     if (nombre) query.nombre = new RegExp(nombre, "i");
+    if (dni) query.dni = Number(dni);
+    if (celular) query.celular = Number(celular);
 
     const cliente = await ClienteModel.find(query).populate(
       "vehiculo",
@@ -115,7 +117,7 @@ const postClient = async (req, res, next) => {
 const updateClient = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const update = req.body;
+    const update = req.body; 
 
     const updateClient = await ClienteModel.findByIdAndUpdate(id, {
       $set: update,

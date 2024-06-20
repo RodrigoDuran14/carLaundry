@@ -3,28 +3,27 @@ const mongoose = require("mongoose");
 const empleadoSchema = new mongoose.Schema({
   nombre: {
     type: String,
-    required: true,
+    required: [true, "El campo Nombre es obligatorio"],
   },
   dni: {
     type: Number,
-    required: true,
+    required: [true, "El campo Dni es obligatorio"],
   },
   mail: {
     type: String,
-    required: true,
+    required: [true, "El campo Mail es obligatorio"],
   },
   celular: {
     type: Number,
-    required: true,
+    required: [true, "El campo Celular es obligatorio"],
   },
   password: {
     type: String,
   },
-  lavados: {
+  lavados: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Lavados",
-    required: true
-  },
+  }],
   admin: {
     type: Boolean,
     required: true,

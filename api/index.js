@@ -7,6 +7,8 @@ const { config } = require("./config");
 const clienteRoutes = require("./src/routes/cliente.route");
 const vehiculoRoutes = require("./src/routes/vehiculo.route")
 const TiposDeLavadosRoutes = require("./src/routes/tiposLavado.route")
+const EmpleadoRoutes = require("./src/routes/empleado.route")
+const LavadoRoutes = require("./src/routes/lavado.route")
 
 const app = express();
 
@@ -20,16 +22,13 @@ app.use(morgan("dev"));
 app.use("/api", clienteRoutes);
 app.use("/api", vehiculoRoutes)
 app.use("/api", TiposDeLavadosRoutes)
+app.use("/api", EmpleadoRoutes)
+app.use("/api", LavadoRoutes)
 
 
-// Middleware de manejo de errores
-app.use((err, req, res, next) => {
-  if (err.name === 'ValidationError') {
-    const errors = Object.values(err.errors).map(e => e.message);
-    return res.status(400).send({ errors });
-  }
-  res.status(500).send({ error: 'Error interno del servidor' });
-});
+
+
+
 
 
 //conexion a la db
