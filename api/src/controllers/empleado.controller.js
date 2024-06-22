@@ -1,8 +1,8 @@
 const EmpleadosModel = require("../models/Empleado.model");
 const LavadosModel = require("../models/lavado.model");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const postEmpleado = async (req, res, next) => {
   try {
@@ -24,8 +24,20 @@ const postEmpleado = async (req, res, next) => {
 
 const getEmpleadoList = async (req, res, next) => {
   try {
-    const allEmpleados = await EmpleadosModel.find();
-
+    const allEmpleados = await EmpleadosModel.find().populate({
+      path: "lavados",
+      populate: {
+        path: "clienteId",
+        populate: {
+          path: "vehiculo",
+          model: "Vehiculos",
+          select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
+        },
+        model: "Cliente",
+        select: "nombre dni mail celular", // Campos a incluir del cliente
+      },
+      select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+    });
     res.status(200).send(allEmpleados);
   } catch (error) {
     next(error);
@@ -36,10 +48,21 @@ const getEmpleadoById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const empleado = await EmpleadosModel.findById({ _id: id }).populate(
-      "lavados",
-      "horarioInicio horarioFin total estadoDelLavado"
+      {
+        path: "lavados",
+        populate: {
+          path: "clienteId",
+          populate: {
+            path: "vehiculo",
+            model: "Vehiculos",
+            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
+          },
+          model: "Cliente",
+          select: "nombre dni mail celular", // Campos a incluir del cliente
+        },
+        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+      }
     );
-    //falta agregar que traiga la info de lavados, una vez que se le asigne un lavado
     !empleado ? res.status(404).send() : res.status(200).send(empleado);
   } catch (error) {
     next(error);
@@ -56,46 +79,24 @@ const findEmpleado = async (req, res, next) => {
     if (dni) empleadoQuery.dni = Number(dni);
     if (celular) empleadoQuery.celular = Number(celular);
 
-    const empleado = await EmpleadosModel.find(empleadoQuery);
+    const empleado = await EmpleadosModel.find(empleadoQuery).populate(
+      {
+        path: "lavados",
+        populate: {
+          path: "clienteId",
+          populate: {
+            path: "vehiculo",
+            model: "Vehiculos",
+            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
+          },
+          model: "Cliente",
+          select: "nombre dni mail celular", // Campos a incluir del cliente
+        },
+        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+      }
+    );
 
     res.status(200).send(empleado);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const findEmpleadoByLavadosDate = async (req, res, next) => {
-  try {
-    const { horarioInicio, horarioFin, estadoDelLavado } = req.query;
-
-    let lavadoQuery = {};
-    if (horarioInicio) lavadoQuery.horarioInicio = Date(horarioInicio);
-    if (horarioFin) lavadoQuery.horarioFin = new RegExp(horarioFin, "i");
-    if (estadoDelLavado)
-      lavadoQuery.estadoDelLavado = new RegExp(estadoDelLavado, "i");
-
-    if (Object.keys(lavadoQuery).length === 0) {
-      return res.status(400).send({
-        error:
-          "Se requiere al menos un parámetro de búsqueda (horario de inicio, horario final o estado del lavado)",
-      });
-    }
-
-    const lavados = await LavadosModel.find(lavadoQuery);
-    const lavadoId = lavados.map((l) => l._id);
-
-    if (lavadoId.length === 0) {
-      return res.status(404).send({
-        error: "No se encontraron lavados con los parámetros proporcionados",
-      });
-    }
-
-    const empleados = await EmpleadosModel.find({
-      lavados: { $in: lavadoId },
-    });
-    //.populate("lavados", "horarioInicio horarioFin estadoDelLavado vehiculoId clienteId");
-
-    res.status(200).send(empleados);
   } catch (error) {
     next(error);
   }
@@ -123,7 +124,22 @@ const updateEmpleado = async (req, res, next) => {
 const updateActiveEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await EmpleadosModel.findById(id);
+    const empleado = await EmpleadosModel.findById(id).populate(
+      {
+        path: "lavados",
+        populate: {
+          path: "clienteId",
+          populate: {
+            path: "vehiculo",
+            model: "Vehiculos",
+            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
+          },
+          model: "Cliente",
+          select: "nombre dni mail celular", // Campos a incluir del cliente
+        },
+        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+      }
+    );
 
     if (!empleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });
@@ -141,14 +157,29 @@ const updateActiveEmpleado = async (req, res, next) => {
 const updateAdminEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await EmpleadosModel.findById(id);
+    const empleado = await EmpleadosModel.findById(id).populate(
+      {
+        path: "lavados",
+        populate: {
+          path: "clienteId",
+          populate: {
+            path: "vehiculo",
+            model: "Vehiculos",
+            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
+          },
+          model: "Cliente",
+          select: "nombre dni mail celular", // Campos a incluir del cliente
+        },
+        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+      }
+    );
 
     if (!empleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });
     }
 
-    if(empleado.admin){
-      empleado.password = ""
+    if (empleado.admin) {
+      empleado.password = "";
     }
 
     empleado.admin = !empleado.admin;
@@ -163,21 +194,20 @@ const updateAdminEmpleado = async (req, res, next) => {
 const createPassword = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {password} = req.body;
+    const { password } = req.body;
 
-    if(!password) {
-      return res.status(400).send("El campo password es obligatorio")
+    if (!password) {
+      return res.status(400).send("El campo password es obligatorio");
     }
-    
+
     const empleado = await EmpleadosModel.findById(id);
-    console.log(empleado.admin)
 
     if (!empleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });
     }
 
     if (!empleado.admin) {
-        return res
+      return res
         .status(403)
         .send("Acceso denegado. El empleado no es administrador");
     }
@@ -187,48 +217,50 @@ const createPassword = async (req, res, next) => {
     empleado.password = hashedPassword;
 
     await empleado.save();
-    res
-      .status(200)
-      .send({
-        message: "Contraseña actualizada correctamente",
-        empleado: { id: empleado._id, nombre: empleado.nombre },
-      });
+    res.status(200).send({
+      message: "Contraseña actualizada correctamente",
+      empleado: { id: empleado._id, nombre: empleado.nombre },
+    });
   } catch (error) {
     next(error);
   }
 };
 
-const login = async(req,res,next) =>{
+const login = async (req, res, next) => {
   try {
-    const {mail,password} = req.body
+    const { mail, password } = req.body;
 
-    if(!mail || !password){
-      return res.status(400).send({error: "Mail y contraseña son obligatorios"})
+    if (!mail || !password) {
+      return res
+        .status(400)
+        .send({ error: "Mail y contraseña son obligatorios" });
     }
 
-    const empleado = await EmpleadosModel.findOne({mail})
+    const empleado = await EmpleadosModel.findOne({ mail });
 
-    if(!empleado){
-      return res.status(404).send({error: "Empleado no encontrado"})
+    if (!empleado) {
+      return res.status(404).send({ error: "Empleado no encontrado" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, empleado.password)
+    const isPasswordValid = await bcrypt.compare(password, empleado.password);
 
-    if(!isPasswordValid){
-      return res.status(401).send({error: "Contraseña incorrecta"})
+    if (!isPasswordValid) {
+      return res.status(401).send({ error: "Contraseña incorrecta" });
     }
 
-    if(!empleado.activo){
-      return res.status(403).send({error: "Empleado inactivo"})
+    if (!empleado.activo) {
+      return res.status(403).send({ error: "Empleado inactivo" });
     }
 
     const tokenPayload = {
       id: empleado._id,
       mail: empleado.mail,
-      admin: empleado.admin
-    }
+      admin: empleado.admin,
+    };
 
-    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"})
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.status(200).send({
       message: "Inicio de sesión exitoso",
@@ -238,24 +270,22 @@ const login = async(req,res,next) =>{
         nombre: empleado.nombre,
         mail: empleado.mail,
         admin: empleado.admin,
-        activo: empleado.activo
-      }
-    })
-
+        activo: empleado.activo,
+      },
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 module.exports = {
   postEmpleado,
   getEmpleadoList,
   getEmpleadoById,
   findEmpleado,
-  findEmpleadoByLavadosDate,
   updateEmpleado,
   updateActiveEmpleado,
   updateAdminEmpleado,
   createPassword,
-  login
+  login,
 };

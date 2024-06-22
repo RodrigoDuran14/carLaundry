@@ -22,7 +22,7 @@ const getClientById = async (req, res, next) => {
       "marca modelo matricula tipo color"
     );
 
-    !client ? res.status(404).send() : res.status(200).send(client);
+    !client ? res.status(404).send({error: "Cliente no encontrado"}) : res.status(200).send(client);
   } catch (error) {
     next(error);
   }
@@ -117,7 +117,7 @@ const postClient = async (req, res, next) => {
 const updateClient = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const update = req.body; 
+    const update = req.body;
 
     const updateClient = await ClienteModel.findByIdAndUpdate(id, {
       $set: update,

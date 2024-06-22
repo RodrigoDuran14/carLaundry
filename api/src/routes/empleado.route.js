@@ -5,7 +5,6 @@ const {
   getEmpleadoList,
   getEmpleadoById,
   findEmpleado,
-  findEmpleadoByLavadosDate,
   updateEmpleado,
   updateAdminEmpleado,
   updateActiveEmpleado,
@@ -16,7 +15,6 @@ const {
 router.get("/empleados", getEmpleadoList);
 router.get("/empleado/:id", getEmpleadoById);
 router.get("/empleado", findEmpleado);
-router.get("/empleadolavado", findEmpleadoByLavadosDate);
 router.put("/empleados/:id", updateEmpleado);
 router.put("/empleadopassword/:id", createPassword)
 router.post("/empleado", postEmpleado);

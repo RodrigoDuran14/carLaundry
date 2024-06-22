@@ -12,7 +12,7 @@ const lavadoSchema = new mongoose.Schema({
   },
   lavador: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Empleado",
+    ref: "Empleados",
   }],
   estadoDelLavado: {
     type: String,
@@ -34,7 +34,7 @@ const lavadoSchema = new mongoose.Schema({
   },
   vehiculoId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Vehiculo",
+    ref: "Vehiculos",
     required: true
   },
   activo: {
