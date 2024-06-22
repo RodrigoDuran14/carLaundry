@@ -1,6 +1,8 @@
 const EmpleadosModel = require("../models/Empleado.model");
 const LavadosModel = require("../models/lavado.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 const postEmpleado = async (req, res, next) => {
   try {
@@ -196,6 +198,55 @@ const createPassword = async (req, res, next) => {
   }
 };
 
+const login = async(req,res,next) =>{
+  try {
+    const {mail,password} = req.body
+
+    if(!mail || !password){
+      return res.status(400).send({error: "Mail y contraseña son obligatorios"})
+    }
+
+    const empleado = await EmpleadosModel.findOne({mail})
+
+    if(!empleado){
+      return res.status(404).send({error: "Empleado no encontrado"})
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, empleado.password)
+
+    if(!isPasswordValid){
+      return res.status(401).send({error: "Contraseña incorrecta"})
+    }
+
+    if(!empleado.activo){
+      return res.status(403).send({error: "Empleado inactivo"})
+    }
+
+    const tokenPayload = {
+      id: empleado._id,
+      mail: empleado.mail,
+      admin: empleado.admin
+    }
+
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "1h"})
+
+    res.status(200).send({
+      message: "Inicio de sesión exitoso",
+      token,
+      empleado: {
+        id: empleado._id,
+        nombre: empleado.nombre,
+        mail: empleado.mail,
+        admin: empleado.admin,
+        activo: empleado.activo
+      }
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   postEmpleado,
   getEmpleadoList,
@@ -205,5 +256,6 @@ module.exports = {
   updateEmpleado,
   updateActiveEmpleado,
   updateAdminEmpleado,
-  createPassword
+  createPassword,
+  login
 };

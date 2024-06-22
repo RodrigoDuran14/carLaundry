@@ -27,15 +27,6 @@ app.use("/api", LavadoRoutes)
 
 
 
-// Middleware de manejo de errores
-app.use((err, req, res, next) => {
-  if (err.name === 'ValidationError') {
-    console.log(err)
-    const errors = Object.values(err.errors).map(e => e.message);
-    return res.status(400).send({ errors });
-  }
-  res.status(500).send({ error: 'Error interno del servidor' });
-});
 
 
 

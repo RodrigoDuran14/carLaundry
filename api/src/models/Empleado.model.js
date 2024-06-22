@@ -12,6 +12,7 @@ const empleadoSchema = new mongoose.Schema({
   mail: {
     type: String,
     required: [true, "El campo Mail es obligatorio"],
+    unique: true
   },
   celular: {
     type: Number,
