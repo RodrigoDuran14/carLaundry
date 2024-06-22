@@ -38,7 +38,11 @@ const inicioLavado = async (req, res, next) => {
     const { id } = req.params;
     const { lavador } = req.body;
 
-    const lavado = await LavadosModel.findById(id);
+    const lavado = await LavadosModel.findById(id)
+      .populate("lavador", "nombre dni mail")
+      .populate("clienteId", "nombre dni mail celular")
+      .populate("vehiculoId", "marca modelo matricula color tipo")
+      .populate("tipoLavado", "titulo descripcion precio");
     if (!lavado) {
       return res.status(404).send({ error: "Lavado no encontrado" });
     }
@@ -63,9 +67,11 @@ const finalizarLavado = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const lavado = await LavadosModel.findById(id).populate(
-      "clienteId vehiculoId lavador"
-    );
+    const lavado = await LavadosModel.findById(id)
+      .populate("lavador", "nombre dni mail")
+      .populate("clienteId", "nombre dni mail celular")
+      .populate("vehiculoId", "marca modelo matricula color tipo")
+      .populate("tipoLavado", "titulo descripcion precio");
     if (!lavado) {
       return res.status(404).send({ error: "Lavado no encontrado" });
     }
