@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { findVehiculo } from "../../services/api";
+import { toast } from "react-toastify";
 import "../../styles/vehiculos/BuscadorVehiculo.css"
 
 const BuscadorVehiculos = ({ onSelect }) => {
@@ -8,11 +9,19 @@ const BuscadorVehiculos = ({ onSelect }) => {
 
   useEffect(() => {
     if (search) {
-      const fetchVehiculos = async () => {
-        const response = await findVehiculo({ marca: search });
-        setVehiculos(response.data);
-      };
-      fetchVehiculos();
+      try {
+        const fetchVehiculos = async () => {
+          const response = await findVehiculo({ marca: search });
+          if(response.data.length === 0) {
+            toast.info("No se encontraron vehiculos con esos parametros");
+          }else{
+            setVehiculos(response.data);
+          }
+        };
+        fetchVehiculos();
+      } catch (error) {
+        toast.error("Error al buscar Vehiculo")
+      }
     } else {
       setVehiculos([]);
     }

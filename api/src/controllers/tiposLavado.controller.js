@@ -47,22 +47,8 @@ const findTiposLavado = async (req, res, next) => {
     if (descripcion)
       tiposLavadoQuery.descripcion = new RegExp(descripcion, "i");
 
-    if (Object.keys(tiposLavadoQuery).length === 0) {
-      return res.status(400).send({
-        error:
-          "Se requiere al menos un parámetro de búsqueda (titulo, descripcion)",
-      });
-    }
-
     const tiposLavado = await TiposDeLavadosModel.find(tiposLavadoQuery);
     const tiposLavadoId = tiposLavado.map((t) => t._id);
-
-    if (tiposLavadoId.length === 0) {
-      return res.status(404).send({
-        error:
-          "No se encontraron tipos de lavado con los parámetros proporcionados",
-      });
-    }
 
     res.status(200).send(tiposLavado);
   } catch (error) {

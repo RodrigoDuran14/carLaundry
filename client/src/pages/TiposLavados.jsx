@@ -3,7 +3,8 @@ import { getTiposLavadoList, updateActiveTiposLavado } from "../services/api";
 import BuscadorTiposLavado from "../components/TiposLavado/BuscadorTiposLavado";
 import FormTiposLavado from "../components/TiposLavado/FormTiposLavado";
 import { useNavigate } from "react-router-dom";
-import "../styles/tiposLavado/TiposLavado.css"
+import { toast } from "react-toastify";
+import "../styles/tiposLavado/TiposLavado.css";
 
 const TiposLavados = () => {
   const [tiposLavado, setTiposLavado] = useState([]);
@@ -17,9 +18,13 @@ const TiposLavados = () => {
   }, []);
 
   const loadTiposLavado = async () => {
-    const response = await getTiposLavadoList();
-    setTiposLavado(response.data.filter((t) => t.activo));
-    setTiposLavadoEliminados(response.data.filter((t) => !t.activo));
+    try {
+      const response = await getTiposLavadoList();
+      setTiposLavado(response.data.filter((t) => t.activo));
+      setTiposLavadoEliminados(response.data.filter((t) => !t.activo));
+    } catch (error) {
+      toast.error("Error al cargar los Tipos de Lavados");
+    }
   };
 
   const handleSearchResult = (result) => {
@@ -28,8 +33,13 @@ const TiposLavados = () => {
   };
 
   const handleChangeActive = async (id) => {
-    await updateActiveTiposLavado(id);
-    loadTiposLavado();
+    try {
+      await updateActiveTiposLavado(id);
+      loadTiposLavado();
+      toast.success("Estado del Tipo de Lavado actualizado correctamente");
+    } catch (error) {
+      toast.error("Error al actualizar el estado del Tipo de Lavado");
+    }
   };
 
   const handleCreate = () => {

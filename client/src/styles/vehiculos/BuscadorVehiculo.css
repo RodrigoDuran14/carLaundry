@@ -1,3 +1,8 @@
 ul{
   list-style: none;
+  border-radius: 20px;
+}
+
+ul :hover{
+  background-color: #ff6347;
 }

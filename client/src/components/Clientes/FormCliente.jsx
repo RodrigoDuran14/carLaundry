@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postClient } from "../../services/api";
 import BuscadorVehiculos from "../Vehiculos/BuscadorVehiculos";
+import { toast } from "react-toastify";
 import "../../styles/clientes/FormCliente.css"
 
 const FormCliente = ({ onCreate }) => {
@@ -25,17 +26,27 @@ const FormCliente = ({ onCreate }) => {
   };
 
   const handleSelectVehiculo = (vehiculo) => {
-    setForm({
-      ...form,
-      vehiculoId: vehiculo._id,
-    });
-    setShowVehiculos(false);
+    try {
+      setForm({
+        ...form,
+        vehiculoId: vehiculo._id,
+      });
+      setShowVehiculos(false);
+      toast.success("Vehiculo seleccionado correctamente")
+    } catch (error) {
+      toast.error("Error al seleccionar vehiculo")
+    }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
     await postClient(form);
     onCreate();
+    toast.success("Nuevo cliente creado con exito")
+    } catch (error) {
+      toast.error("Error al crear nuevo cliente")
+    }
   };
   return (
     <div className="form-container">

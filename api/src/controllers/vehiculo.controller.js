@@ -51,21 +51,7 @@ const findVehiculo = async (req, res, next) => {
     if (color) vehiculoQuery.color = new RegExp(color, "i");
     if (tipo) vehiculoQuery.tipo = new RegExp(tipo, "i");
 
-    if (Object.keys(vehiculoQuery).length === 0) {
-      return res.status(400).send({
-        error:
-          "Se requiere al menos un parámetro de búsqueda (marca, modelo, matricula, color o tipo)",
-      });
-    }
-
     const vehiculos = await VehiculosModel.find(vehiculoQuery);
-    const vehiculoId = vehiculos.map((v) => v._id);
-
-    if (vehiculoId.length === 0) {
-      return res.status(404).send({
-        error: "No se encontraron vehículos con los parámetros proporcionados",
-      });
-    }
 
     res.status(200).send(vehiculos);
   } catch (error) {

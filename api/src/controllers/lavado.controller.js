@@ -138,9 +138,32 @@ const updateLavado = async (req, res, next) => {
       update.total = nuevoTotal;
     }
 
-    const updateLavado = await LavadosModel.findByIdAndUpdate(id, {
-      $set: update,
-    });
+    if (update.lavador && update.lavador.length > 0) {
+      const lavadoActual = await LavadosModel.findById(id).populate("lavador");
+      if (lavadoActual) {
+        const lavadoresAnteriores = lavadoActual.lavador;
+        for (const lavadorAnterior of lavadoresAnteriores) {
+          await EmpleadosModel.findByIdAndUpdate(lavadorAnterior._id, {
+            $pull: { lavados: id },
+          });
+        }
+      }
+    }
+
+    for (const lavadorId of update.lavador) {
+      await EmpleadosModel.findByIdAndUpdate(lavadorId, {
+        $addToSet: { lavados: id },
+      });
+    }
+
+    const updateLavado = await LavadosModel.findByIdAndUpdate(
+      id,
+      {
+        $set: update,
+      },
+      { new: true }
+    );
+
     if (!updateLavado) {
       return res.status(404).send({ error: "Lavado no encontrado" });
     }
@@ -174,28 +197,24 @@ const updateActiveLavado = async (req, res, next) => {
 const findLavado = async (req, res, next) => {
   try {
     const { lavador, cliente, matricula } = req.query;
-    try {
-      const query = {};
-      if (lavador) {
-        query["lavador.nombre"] = new RegExp(lavador, "i");
-      }
-      if (cliente) {
-        query["clienteId.nombre"] = new RegExp(cliente, "i");
-      }
-      if (matricula) {
-        query["vehiculoId.matricula"] = new RegExp(matricula, "i");
-      }
-
-      const lavados = await LavadosModel.find(query)
-        .populate("clienteId", "nombre dni mail celular")
-        .populate("vehiculoId", "marca modelo matricula color tipo")
-        .populate("lavador", "nombre mail celular")
-        .populate("tipoLavado", "titulo precio");
-
-      res.status(200).send(lavados);
-    } catch (error) {
-      next(error);
+    const query = {};
+    if (lavador) {
+      query["lavador.nombre"] = new RegExp(lavador, "i");
     }
+    if (cliente) {
+      query["clienteId.nombre"] = new RegExp(cliente, "i");
+    }
+    if (matricula) {
+      query["vehiculoId.matricula"] = new RegExp(matricula, "i");
+    }
+
+    const lavados = await LavadosModel.find(query)
+      .populate("clienteId", "nombre dni mail celular")
+      .populate("vehiculoId", "marca modelo matricula color tipo")
+      .populate("lavador", "nombre mail celular")
+      .populate("tipoLavado", "titulo precio");
+
+    res.status(200).send(lavados);
   } catch (error) {
     next(error);
   }

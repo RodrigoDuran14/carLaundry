@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { postVehiculo } from "../../services/api";
-import "../../styles/vehiculos/FormVehiculos.css"
+import { toast } from "react-toastify";
+import "../../styles/vehiculos/FormVehiculos.css";
 
 const FormVehiculo = ({ onCreate }) => {
   const [form, setForm] = useState({
@@ -19,9 +20,14 @@ const FormVehiculo = ({ onCreate }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    await postVehiculo(form);
-    onCreate();
+    try {
+      e.preventDefault();
+      await postVehiculo(form);
+      onCreate();
+      toast.success("Nuevo Vehiculo creado con exito");
+    } catch (error) {
+      toast.error("Error al crear nuevo vehiculo");
+    }
   };
 
   return (
@@ -50,7 +56,7 @@ const FormVehiculo = ({ onCreate }) => {
           name="color"
           type="text"
           placeholder="Color"
-          onChange={handleChange} 
+          onChange={handleChange}
         />
         <select name="tipo" id="tipo" onChange={handleChange}>
           <option value="Auto">Auto</option>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getClientById, updateClient } from "../../services/api";
+import { toast } from "react-toastify";
 import "../../styles/clientes/EditarCliente.css";
 
 const EditarCliente = () => {
@@ -9,15 +10,18 @@ const EditarCliente = () => {
   const [cliente, setCliente] = useState(null);
 
   useEffect(() => {
-    const fetchCliente = async () => {
-      const response = await getClientById(id);
-      setCliente(response.data);
-    };
-    fetchCliente();
+    try {
+      const fetchCliente = async () => {
+        const response = await getClientById(id);
+        setCliente(response.data);
+      };
+      fetchCliente();
+    } catch (error) {
+      toast.error("Error al cargar cliente")
+    }
   }, [id]);
 
   const handleChange = (e) => {
-    console.log(cliente);
     setCliente({
       ...cliente,
       [e.target.name]: e.target.value,
@@ -25,9 +29,14 @@ const EditarCliente = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
     await updateClient(id, cliente);
+    toast.success("Cliente actualizado correctamente")
     navigate("/clientes");
+    } catch (error) {
+      toast.error("Error al actualizar cliente")
+    }
   };
 
   if (!cliente) return <div>Cargando...</div>;
@@ -63,6 +72,7 @@ const EditarCliente = () => {
         <button type="submit">Guardar</button>
       </form>
 
+    <h3>Vehiculos</h3>
       <table>
         <thead>
           <tr>

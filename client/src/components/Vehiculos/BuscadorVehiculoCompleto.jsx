@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { findVehiculo, getVehiculoList } from "../../services/api";
+import { findVehiculo } from "../../services/api";
+import { toast } from "react-toastify";
 import "../../styles/vehiculos/BuscadorVehiculoCompleto.css"
 
 const BuscadorVehiculoCompleto = ({ onResult }) => {
@@ -7,11 +8,19 @@ const BuscadorVehiculoCompleto = ({ onResult }) => {
   const [searchField, setSearchField] = useState("marca");
 
   const handleSearch = async () => {
-    let query = {};
-    query[searchField] = search;
-    const response = await findVehiculo(query);
-    
-    onResult(response.data);
+    try {
+      let query = {};
+      query[searchField] = search;
+      const response = await findVehiculo(query);
+      
+      if(response.data.length === 0) {
+        toast.info("No se encontraron vehiculos con esos parametros");
+      }else{
+        onResult(response.data);
+      }
+    } catch (error) {
+      toast.error("Error al buscar Vehiculo")
+    }
   };
 
   return (

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getTiposLavadoById, updateTiposLavado } from '../../services/api'
+import { toast } from "react-toastify";
 import "../../styles/tiposLavado/EditarTipoLavado.css"
 
 const EditarTipoLavado = () => {
@@ -9,11 +10,15 @@ const EditarTipoLavado = () => {
   const [tiposLavados, setTiposLavados] = useState(null);
 
   useEffect(() => {
-    const fetchTipoLavado = async()=>{
-      const response = await getTiposLavadoById(id)
-      setTiposLavados(response.data)
+    try {
+      const fetchTipoLavado = async()=>{
+        const response = await getTiposLavadoById(id)
+        setTiposLavados(response.data)
+      }
+      fetchTipoLavado()
+    } catch (error) {
+      toast.error("Error al cargar los Tipos de Lavado")
     }
-    fetchTipoLavado()
   }, [id]);
 
   const handleChange = (e)=>{
@@ -24,9 +29,14 @@ const EditarTipoLavado = () => {
   }
 
   const handleSubmit = async (e)=>{
-    e.preventDefault()
-    await updateTiposLavado(id, tiposLavados)
-    navigate("/tipos-lavados")
+    try {
+      e.preventDefault()
+      await updateTiposLavado(id, tiposLavados)
+      toast.success("Tipo de Lavado actualizado correctamente")
+      navigate("/tipos-lavados")
+    } catch (error) {
+      toast.error("Error al actualizar tipos de lavado")
+    }
   }
 
   if(!tiposLavados) return <div>Cargando...</div>

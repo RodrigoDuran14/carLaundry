@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { postTipoLavado } from "../../services/api";
-import "../../styles/tiposLavado/FormTiposLavado.css"
+import { toast } from "react-toastify";
+import "../../styles/tiposLavado/FormTiposLavado.css";
 
 const FormTiposLavado = ({ onCreate }) => {
   const [form, setForm] = useState({
@@ -17,9 +18,14 @@ const FormTiposLavado = ({ onCreate }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    await postTipoLavado(form);
-    onCreate();
+    try {
+      e.preventDefault();
+      await postTipoLavado(form);
+      onCreate();
+      toast.success("Nuevo Tipo de Lavado creado con exito");
+    } catch (error) {
+      toast.error("Error al crear nuevo Tipo de Lavado");
+    }
   };
 
   return (

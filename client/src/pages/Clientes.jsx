@@ -3,6 +3,7 @@ import { getClientList, updateActiveClient } from "../services/api";
 import BuscadorClientes from "../components/Clientes/BuscadorClientes";
 import FormCliente from "../components/Clientes/FormCliente";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "../styles/clientes/clientes.css";
 
 const Clientes = () => {
@@ -17,10 +18,14 @@ const Clientes = () => {
   }, []);
 
   const loadClientes = async () => {
-    const response = await getClientList();
-    setClientes(response.data.filter((cliente) => cliente.activo));
-    setClientesEliminados(response.data.filter((cliente) => !cliente.activo));
-    console.log(response.data);
+    try {
+      const response = await getClientList();
+      setClientes(response.data.filter((cliente) => cliente.activo));
+      setClientesEliminados(response.data.filter((cliente) => !cliente.activo));
+      console.log(response.data);
+    } catch (error) {
+      toast.error("Error al cargar Clientes");
+    }
   };
 
   const handleSearchResult = (result) => {
@@ -29,17 +34,22 @@ const Clientes = () => {
   };
 
   const handleChangeActive = async (id) => {
-    await updateActiveClient(id);
-    loadClientes();
+    try {
+      await updateActiveClient(id);
+      loadClientes();
+      toast.success("Estado del Cliente actualizado correctamente");
+    } catch (error) {
+      toast.error("Error al actualizar el estado del Cliente");
+    }
   };
 
   const handleCreate = () => {
     loadClientes();
   };
 
-  const handleAddClientClick=()=>{
-    setShowFormCliente(!showFormCliente)
-  }
+  const handleAddClientClick = () => {
+    setShowFormCliente(!showFormCliente);
+  };
 
   return (
     <div className="container">
@@ -51,7 +61,7 @@ const Clientes = () => {
             {showFormCliente ? "Ocultar Formulario" : "Agregar Cliente"}
           </button>
         </div>
-        
+
         {showFormCliente && (
           <div className="form-container">
             <FormCliente onCreate={handleCreate} />
@@ -112,10 +122,10 @@ const Clientes = () => {
                   <td>{cliente.nombre}</td>
                   <td>{cliente.dni}</td>
                   {cliente.vehiculo.map((v) => (
-                  <td key={v._id}>
-                    {v.marca} {v.modelo}
-                  </td>
-                ))}
+                    <td key={v._id}>
+                      {v.marca} {v.modelo}
+                    </td>
+                  ))}
                   <td>
                     <button onClick={() => handleChangeActive(cliente._id)}>
                       Activar

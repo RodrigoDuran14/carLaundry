@@ -3,6 +3,7 @@ import { getVehiculoList, updateActiveVehiculo } from "../services/api";
 import BuscadorVehiculoCompleto from "../components/Vehiculos/BuscadorVehiculoCompleto";
 import FormVehiculo from "../components/Vehiculos/FormVehiculo";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "../styles/vehiculos/Vehiculos.css";
 
 const Vehiculos = () => {
@@ -17,9 +18,13 @@ const Vehiculos = () => {
   }, []);
 
   const loadVehiculos = async () => {
-    const response = await getVehiculoList();
-    setVehiculos(response.data.filter((v) => v.activo));
-    setVehiculosEliminados(response.data.filter((v) => !v.activo));
+    try {
+      const response = await getVehiculoList();
+      setVehiculos(response.data.filter((v) => v.activo));
+      setVehiculosEliminados(response.data.filter((v) => !v.activo));
+    } catch (error) {
+      toast.error("Error al cargar Vehiculos");
+    }
   };
 
   const handleSearchResult = (result) => {
@@ -28,8 +33,13 @@ const Vehiculos = () => {
   };
 
   const handleChangeActive = async (id) => {
-    await updateActiveVehiculo(id);
-    loadVehiculos();
+    try {
+      await updateActiveVehiculo(id);
+      loadVehiculos();
+      toast.success("Estado del Vehiculo actualizado correctamente");
+    } catch (error) {
+      toast.error("Error al actualizar el estado de Vehiculo");
+    }
   };
 
   const handleCreate = () => {

@@ -1,5 +1,4 @@
 const EmpleadosModel = require("../models/Empleado.model");
-const LavadosModel = require("../models/lavado.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -106,6 +105,14 @@ const updateEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params;
     const update = req.body;
+
+    if(update.admin && updatepassword){
+      const saltRounds = 10
+      const hashedPassword = await bcrypt.hash(update.password, saltrounds)
+      update.password = hashedPassword
+    }else{
+      delete update.password
+    }
 
     const updateEmpleado = await EmpleadosModel.findByIdAndUpdate(id, {
       $set: update,

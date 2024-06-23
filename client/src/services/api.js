@@ -30,3 +30,27 @@ export const findTiposLavado = (query)=> axios.get(`${API_URL}/tiposLavado`, {pa
 export const postTipoLavado = (tipoLavado)=> axios.post(`${API_URL}/tiposLavado`, tipoLavado)
 export const updateTiposLavado = (id, tipoLavado)=> axios.put(`${API_URL}/tiposLavado/${id}`, tipoLavado)
 export const updateActiveTiposLavado = (id)=> axios.patch(`${API_URL}/tiposLavado/${id}`)
+
+//=====================EMPLEADOS==============================
+
+export const getEmpleadoList = ()=> axios.get(`${API_URL}/empleados`)
+export const getEmpleadoById = (id)=> axios.get(`${API_URL}/empleado/${id}`)
+export const findEmpleado = (query)=> axios.get(`${API_URL}/empleado`, {params: query})
+export const updateEmpleado = (id, empleado)=> axios.put(`${API_URL}/empleados/${id}`, empleado)
+export const createPassword = (id, password)=> axios.put(`${API_URL}/empleadopassword/${id}`, password)
+export const postEmpleado = (empleado)=> axios.post(`${API_URL}/empleado`, empleado)
+export const updateActiveEmpleado = (id)=> axios.patch(`${API_URL}/empleado/${id}`)
+export const updateAdminEmpleado = (id)=> axios.patch(`${API_URL}/empleadoadmin/${id}`)
+export const login = (data)=> axios.post(`${API_URL}/login`, data)
+
+//=====================LAVADOS==============================
+
+export const postLavados = (lavado)=> axios.post(`${API_URL}/lavado`, lavado)
+export const getLavadoList = ()=> axios.get(`${API_URL}/lavados`)
+export const findLavado = (query)=> axios.get(`${API_URL}/lavado`, {params: query})
+export const findLavadoByDate = (query)=> axios.get(`${API_URL}/lavadosDate`, {params: query})
+export const getLavadoById = (id)=> axios.get(`${API_URL}/lavados/${id}`)
+export const updateLavado = (id, lavado)=> axios.put(`${API_URL}/lavados/${id}`, lavado)
+export const inicioLavado = (id, lavador)=> axios.patch(`${API_URL}/lavado/${id}/inicio`, lavador)
+export const finalizarLavado = (id)=> axios.patch(`${API_URL}/lavado/${id}/fin`)
+export const updateActiveLavado = (id)=> axios.patch(`${API_URL}/lavados/${id}`)

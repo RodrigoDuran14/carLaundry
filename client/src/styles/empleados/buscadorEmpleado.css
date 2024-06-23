@@ -1,0 +1,28 @@
+.buscador-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.buscador-container select,
+.buscador-container input {
+  margin-right: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.buscador-container button {
+  margin-top: -10px;
+  padding: 8px 16px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.buscador-container button:hover {
+  background-color: #ff6347;
+}
