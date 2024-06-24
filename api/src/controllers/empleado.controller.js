@@ -108,7 +108,7 @@ const updateEmpleado = async (req, res, next) => {
 
     if(update.admin && updatepassword){
       const saltRounds = 10
-      const hashedPassword = await bcrypt.hash(update.password, saltrounds)
+      const hashedPassword = await bcrypt.hash(update.password, saltRounds)
       update.password = hashedPassword
     }else{
       delete update.password

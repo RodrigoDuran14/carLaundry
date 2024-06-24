@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { findLavado } from "../../services/api";
 import { toast } from "react-toastify";
+import "../../styles/lavados/BuscadorLavados.css"
 
 const BuscadorLavados = ({ onResult }) => {
   const [search, setSearch] = useState("");
@@ -30,7 +31,7 @@ const BuscadorLavados = ({ onResult }) => {
         onChange={(e) => setSearchField(e.target.value)}
       >
         <option value="lavador">Nombre Lavador</option>
-        <option value="clienteId">Nombre Cliente</option>
+        <option value="cliente">Nombre Cliente</option>
         <option value="matricula">Matricula vehiculo</option>
       </select>
       <input

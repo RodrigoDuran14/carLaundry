@@ -13,6 +13,7 @@ const BuscadorTiposLavado = ({ onResult }) => {
       query[searchField] = search;
       const response = await findTiposLavado(query);
       if(response.data.length === 0) {
+        setSearch("")
         toast.info("No se encontraron tipos de lavados con esos parametros");
       }else{
         onResult(response.data);

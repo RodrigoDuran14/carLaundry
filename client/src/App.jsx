@@ -12,6 +12,7 @@ import FormCliente from "./components/Clientes/FormCliente";
 import FormVehiculo from "./components/Vehiculos/FormVehiculo";
 import EditarTipoLavado from "./components/TiposLavado/EditarTipoLavado";
 import EditarEmpleado from "./components/Empleados/EditarEmpleado";
+import EditarLavados from "./components/Lavados/EditarLavados"
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/tipos-lavados" element={<TiposLavados />} />
         <Route path="/tipos-lavados/:id" element={<EditarTipoLavado />} />
         <Route path="/lavados" element={<Lavados />} />
+        <Route path="/lavados/:id" element={<EditarLavados />} />
       </Routes>
     </>
   );

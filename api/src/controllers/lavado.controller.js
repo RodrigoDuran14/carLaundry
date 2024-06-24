@@ -94,7 +94,15 @@ const getLavadoList = async (req, res, next) => {
   try {
     const allLavados = await LavadosModel.find()
       .populate("lavador", "nombre dni mail")
-      .populate("clienteId", "nombre dni mail celular")
+      .populate({
+        path: 'clienteId',
+        populate: {
+          path: 'vehiculo',
+          model: 'Vehiculos',
+          select: 'marca modelo matricula color tipo' 
+        },
+        select: 'nombre dni mail celular vehiculo' 
+      })
       .populate("vehiculoId", "marca modelo matricula color tipo")
       .populate("tipoLavado", "titulo descripcion precio");
     res.status(200).send(allLavados);
@@ -108,7 +116,17 @@ const getLavadoById = async (req, res, next) => {
     const { id } = req.params;
     const lavado = await LavadosModel.findById({ _id: id })
       .populate("lavador", "nombre dni mail")
-      .populate("clienteId", "nombre dni mail celular")
+      .populate(
+        {
+          path: 'clienteId',
+          populate: {
+            path: 'vehiculo',
+            model: 'Vehiculos',
+            select: 'marca modelo matricula color tipo' 
+          },
+          select: 'nombre dni mail celular vehiculo' 
+        }
+      )
       .populate("vehiculoId", "marca modelo matricula color tipo")
       .populate("tipoLavado", "titulo descripcion precio");
 
@@ -148,12 +166,12 @@ const updateLavado = async (req, res, next) => {
           });
         }
       }
-    }
 
-    for (const lavadorId of update.lavador) {
-      await EmpleadosModel.findByIdAndUpdate(lavadorId, {
-        $addToSet: { lavados: id },
-      });
+      for (const lavadorId of update.lavador) {
+        await EmpleadosModel.findByIdAndUpdate(lavadorId, {
+          $addToSet: { lavados: id },
+        });
+      }
     }
 
     const updateLavado = await LavadosModel.findByIdAndUpdate(
@@ -168,7 +186,7 @@ const updateLavado = async (req, res, next) => {
       return res.status(404).send({ error: "Lavado no encontrado" });
     }
 
-    res.status(200).send(update);
+    res.status(200).send(updateLavado);
   } catch (error) {
     next(error);
   }

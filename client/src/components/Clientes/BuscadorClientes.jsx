@@ -22,6 +22,7 @@ const BuscadorClientes = ({ onResult }) => {
         }
         const response = await getClientsByName(query);
         if(response.data.length === 0) {
+          setSearch("")
           toast.info("No se encontraron Clientes con esos parametros");
         }else{
           onResult(response.data);

@@ -18,6 +18,7 @@ const BuscadorEmpleado = ({ onResult }) => {
       }
       const response = await findEmpleado(query);
       if(response.data.length === 0) {
+        setSearch("")
         toast.info("No se encontraron Empleados con esos parametros");
       }else{
         onResult(response.data);

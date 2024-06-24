@@ -14,6 +14,7 @@ const BuscadorVehiculoCompleto = ({ onResult }) => {
       const response = await findVehiculo(query);
       
       if(response.data.length === 0) {
+        setSearch("")
         toast.info("No se encontraron vehiculos con esos parametros");
       }else{
         onResult(response.data);
