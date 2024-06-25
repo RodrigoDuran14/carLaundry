@@ -106,7 +106,7 @@ const updateEmpleado = async (req, res, next) => {
     const { id } = req.params;
     const update = req.body;
 
-    if(update.admin && updatepassword){
+    if(update.password){
       const saltRounds = 10
       const hashedPassword = await bcrypt.hash(update.password, saltRounds)
       update.password = hashedPassword
@@ -122,6 +122,7 @@ const updateEmpleado = async (req, res, next) => {
       return res.status(404).send({ error: "Empleado no encontrado" });
     }
 
+    await updateEmpleado.save()
     res.status(200).send(update);
   } catch (error) {
     next(error);
@@ -238,9 +239,7 @@ const login = async (req, res, next) => {
     const { mail, password } = req.body;
 
     if (!mail || !password) {
-      return res
-        .status(400)
-        .send({ error: "Mail y contraseña son obligatorios" });
+      return res.status(400).send({ error: "Correo electrónico y contraseña son obligatorios" });
     }
 
     const empleado = await EmpleadosModel.findOne({ mail });
@@ -249,13 +248,14 @@ const login = async (req, res, next) => {
       return res.status(404).send({ error: "Empleado no encontrado" });
     }
 
+    // Compara la contraseña ingresada con la contraseña almacenada en la base de datos
     const isPasswordValid = await bcrypt.compare(password, empleado.password);
 
     if (!isPasswordValid) {
       return res.status(401).send({ error: "Contraseña incorrecta" });
     }
 
-    if (!empleado.activo) {
+    if (!empleado.activo || !empleado.admin) {
       return res.status(403).send({ error: "Empleado inactivo" });
     }
 

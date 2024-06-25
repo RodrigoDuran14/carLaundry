@@ -19,7 +19,7 @@ select {
 button {
   padding: 10px;
   font-size: 16px;
-  background-color: #007bff;
+  background-color: #333;
   color: white;
   border: none;
   border-radius: 4px;
@@ -28,5 +28,5 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #ff6347;
 }

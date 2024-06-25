@@ -1,6 +1,11 @@
 const LavadosModel = require("../models/lavado.model");
 const TiposDeLavadosModel = require("../models/tiposDeLavado.model");
 const EmpleadosModel = require("../models/Empleado.model");
+const { sendEmail } = require("../services/resendClient");
+//const {Resend} = require('resend');
+const { getClient } = require("../services/venomClient");
+require("dotenv").config();
+//const client = require("../services/whatsappClient");
 
 const postLavados = async (req, res, next) => {
   try {
@@ -36,29 +41,42 @@ const postLavados = async (req, res, next) => {
 const inicioLavado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { lavador } = req.body;
+    let { lavadores } = req.body;
+
+    console.log("ID del lavado:", id);
+    console.log("Lavadores recibidos del cuerpo:", lavadores);
+
+    if (!Array.isArray(lavadores)) {
+      lavadores = [lavadores]; 
+    }
 
     const lavado = await LavadosModel.findById(id)
       .populate("lavador", "nombre dni mail")
       .populate("clienteId", "nombre dni mail celular")
       .populate("vehiculoId", "marca modelo matricula color tipo")
       .populate("tipoLavado", "titulo descripcion precio");
+
     if (!lavado) {
       return res.status(404).send({ error: "Lavado no encontrado" });
     }
 
     lavado.estadoDelLavado = "En progreso";
-    lavado.lavador.push(lavador);
+    lavado.lavador = [...lavado.lavador, ...lavadores];
     lavado.horarioInicio = Date.now();
 
     await lavado.save();
 
-    const empleado = await EmpleadosModel.findById(lavador);
-    empleado.lavados.push(id);
-    await empleado.save();
+    for (const lavadorId of lavadores) {
+      const empleado = await EmpleadosModel.findById(lavadorId);
+      if (empleado) {
+        empleado.lavados.push(id);
+        await empleado.save();
+      }
+    }
 
     res.status(200).send(lavado);
   } catch (error) {
+    console.error("Error en inicioLavado:", error); 
     next(error);
   }
 };
@@ -81,27 +99,71 @@ const finalizarLavado = async (req, res, next) => {
 
     await lavado.save();
 
-    //falta configuracion para notificar al cliente
-    const cliente = lavado.clienteId;
-
     res.status(200).send(lavado);
   } catch (error) {
     next(error);
   }
 };
 
+const notificar = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const lavado = await LavadosModel.findById(id)
+      .populate("lavador", "nombre dni mail")
+      .populate("clienteId", "nombre dni mail celular")
+      .populate("vehiculoId", "marca modelo matricula color tipo")
+      .populate("tipoLavado", "titulo descripcion precio");
+
+    if (!lavado) {
+      return res.status(404).send({ error: "Lavado no encontrado" });
+    }
+
+    const cliente = lavado.clienteId;
+    const vehiculo = lavado.vehiculoId;
+
+    const client = getClient();
+    if (!client) {
+      return res.status(500).send({ error: "Venom client not initialized" });
+    }
+
+    try {
+      const result = await client.sendText(
+        `54${cliente.celular}@c.us`,
+        `Hola ${cliente.nombre}, tu vehículo ${vehiculo.marca} ${vehiculo.modelo} - ${vehiculo.matricula} está listo para retirarlo.\n Gracias por confiar en nosotros! \nCARLAUNDRY `
+      );
+      console.log("Mensaje wsp enviado:", result);
+      if (cliente.mail) {
+        const emailSubject = "Tu vehículo está listo";
+        const emailText = `Hola ${cliente.nombre},\n\nTu vehículo ${vehiculo.marca} ${vehiculo.modelo} - ${vehiculo.matricula} ya está listo para retirarlo.\n\n Gracias por confiar en nosotros! \nCARLAUNDRY`;
+        const result2 = await sendEmail(cliente.mail, emailSubject, emailText);
+        console.log("Mensaje mail enviado:", result2);
+      }
+
+      res.status(200).send({ success: "Notificación enviada" });
+    } catch (error) {
+      console.error("Error enviando mensaje:", error);
+      next(error);
+    }
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 const getLavadoList = async (req, res, next) => {
   try {
     const allLavados = await LavadosModel.find()
       .populate("lavador", "nombre dni mail")
       .populate({
-        path: 'clienteId',
+        path: "clienteId",
         populate: {
-          path: 'vehiculo',
-          model: 'Vehiculos',
-          select: 'marca modelo matricula color tipo' 
+          path: "vehiculo",
+          model: "Vehiculos",
+          select: "marca modelo matricula color tipo",
         },
-        select: 'nombre dni mail celular vehiculo' 
+        select: "nombre dni mail celular vehiculo",
       })
       .populate("vehiculoId", "marca modelo matricula color tipo")
       .populate("tipoLavado", "titulo descripcion precio");
@@ -116,17 +178,15 @@ const getLavadoById = async (req, res, next) => {
     const { id } = req.params;
     const lavado = await LavadosModel.findById({ _id: id })
       .populate("lavador", "nombre dni mail")
-      .populate(
-        {
-          path: 'clienteId',
-          populate: {
-            path: 'vehiculo',
-            model: 'Vehiculos',
-            select: 'marca modelo matricula color tipo' 
-          },
-          select: 'nombre dni mail celular vehiculo' 
-        }
-      )
+      .populate({
+        path: "clienteId",
+        populate: {
+          path: "vehiculo",
+          model: "Vehiculos",
+          select: "marca modelo matricula color tipo",
+        },
+        select: "nombre dni mail celular vehiculo",
+      })
       .populate("vehiculoId", "marca modelo matricula color tipo")
       .populate("tipoLavado", "titulo descripcion precio");
 
@@ -240,14 +300,20 @@ const findLavado = async (req, res, next) => {
 
 const findLavadoByDate = async (req, res, next) => {
   try {
-    const { fechaInicio } = req.query;
+    const { fecha } = req.query;
 
-    const date = new Date(fechaInicio);
+    if (!fecha) {
+      return res.status(400).send({ message: "La fecha es obligatoria" });
+    }
+    const date = new Date(fecha);
+
+    const startOfDay = new Date(date.setUTCHours(0, 0, 0, 0));
+    const endOfDay = new Date(date.setUTCHours(23, 59, 59, 999));
 
     const lavados = await LavadosModel.find({
       horarioInicio: {
-        $gte: date,
-        $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000),
+        $gte: startOfDay,
+        $lt: endOfDay,
       },
     })
       .populate("clienteId", "nombre dni mail celular")
@@ -255,7 +321,9 @@ const findLavadoByDate = async (req, res, next) => {
       .populate("lavador", "nombre mail celular")
       .populate("tipoLavado", "titulo precio");
 
-    res.status(200).send(lavados);
+    const totalVentas = lavados.reduce((sum, lavado) => sum + lavado.total, 0);
+
+    res.status(200).send([lavados, totalVentas]);
   } catch (error) {
     next(error);
   }
@@ -271,4 +339,5 @@ module.exports = {
   updateActiveLavado,
   findLavado,
   findLavadoByDate,
+  notificar,
 };

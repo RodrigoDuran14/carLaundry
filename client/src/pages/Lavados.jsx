@@ -9,6 +9,7 @@ import BuscadorLavados from "../components/Lavados/BuscadorLavados";
 import FormLavado from "../components/Lavados/FormLavado";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "../styles/lavados/lavados.css";
 
 const Lavados = () => {
   const [lavados, setLavados] = useState([]);
@@ -26,8 +27,6 @@ const Lavados = () => {
       const response = await getLavadoList();
       setLavados(response.data.filter((l) => l.activo));
       setLavadosEliminados(response.data.filter((l) => !l.activo));
-    console.log(lavados)
-
     } catch (error) {
       toast.error("Error al cargar Lavados");
     }
@@ -36,7 +35,6 @@ const Lavados = () => {
   const handleSearchResult = (result) => {
     setLavados(result.filter((l) => l.activo));
     setLavadosEliminados(result.filter((l) => !l.activo));
-    console.log(lavados)
   };
 
   const handleChangeActive = async (id) => {
@@ -63,7 +61,7 @@ const Lavados = () => {
         <h1>Lavados</h1>
         <div className="buscador-container">
           <BuscadorLavados onResult={handleSearchResult} />
-          <button className="ass-lavados-btn" onClick={handleAddLavadoClick}>
+          <button className="add-lavados-btn" onClick={handleAddLavadoClick}>
             {showFormLavados ? "Ocultar Formulario" : "Agregar Lavado"}
           </button>
         </div>
@@ -97,9 +95,15 @@ const Lavados = () => {
                 </td>
                 <td>{l.estadoDelLavado}</td>
                 <td>{l.tipoLavado.map((t) => t.titulo).join(", ")}</td>
-                <td>{l.lavador.map(la => la.nombre).join(", ")}</td>
-                <td>{l.horarioInicio? new Date(l.horarioInicio).toLocaleString():" "}</td>
-                <td>{l.horarioFin ? new Date(l.horarioFin).toLocaleString(): " "}</td>
+                <td>{l.lavador.map((la) => la.nombre).join(", ")}</td>
+                <td>
+                  {l.horarioInicio
+                    ? new Date(l.horarioInicio).toLocaleString()
+                    : " "}
+                </td>
+                <td>
+                  {l.horarioFin ? new Date(l.horarioFin).toLocaleString() : " "}
+                </td>
                 <td>{l.total}</td>
                 <td>
                   <button onClick={() => navigate(`/lavados/${l._id}`)}>

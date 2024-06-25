@@ -15,7 +15,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-.add-client-btn {
+.add-tipos-btn {
   margin-top: -10px;
   padding: 10px 20px;
   border: none;
@@ -24,9 +24,10 @@ h1 {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-left: 100px;
 }
 
-.add-client-btn:hover {
+.add-tipos-btn:hover {
   background-color: #ff6347;
 }
 

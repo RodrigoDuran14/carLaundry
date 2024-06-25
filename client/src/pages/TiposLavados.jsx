@@ -57,7 +57,7 @@ const TiposLavados = () => {
         <div className="buscador-container">
           <BuscadorTiposLavado onResult={handleSearchResult} />
           <button className="add-tipos-btn" onClick={handleAddTiposLavadoClick}>
-            {showFormTiposLavado ? "Ocultar Formulario" : "Agregar Vehiculo"}
+            {showFormTiposLavado ? "Ocultar Formulario" : "Agregar Tipo de Lavado"}
           </button>
         </div>
 
@@ -101,7 +101,7 @@ const TiposLavados = () => {
         <button onClick={() => setShowEliminados(!showEliminados)}>
           {showEliminados ? "Ocultar" : "Mostrar"} Tipos de Lavados Eliminados
         </button>
-        {showEliminados && (
+        {showEliminados.length > 0 && (
           <table>
             <thead>
               <tr>

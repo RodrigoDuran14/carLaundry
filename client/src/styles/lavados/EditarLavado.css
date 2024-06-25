@@ -5,6 +5,7 @@
 form {
   display: flex;
   flex-direction: column;
+  margin: auto;
 }
 
 form input, form select {

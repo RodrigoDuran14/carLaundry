@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const { initializeVenom } = require('./src/services/venomClient');
 
 const { config } = require("./config");
 const clienteRoutes = require("./src/routes/cliente.route");
@@ -25,7 +26,14 @@ app.use("/api", TiposDeLavadosRoutes)
 app.use("/api", EmpleadoRoutes)
 app.use("/api", LavadoRoutes)
 
-
+// Inicializar Venom
+initializeVenom()
+  .then(() => {
+    console.log('Venom client initialized successfully');
+  })
+  .catch((error) => {
+    console.error('Error initializing Venom client:', error);
+  });
 
 
 

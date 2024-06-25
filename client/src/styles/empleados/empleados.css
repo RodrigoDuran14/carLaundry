@@ -24,6 +24,7 @@ h1 {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-left: 100px;
 }
 
 .add-empleado-btn:hover {
@@ -83,21 +84,6 @@ table button:hover {
 }
 
 .containerEliminados button:hover {
-  background-color: #ff6347;
-}
-
-.containerAdmins button {
-  padding: 8px 16px;
-  border: none;
-  background-color: #333;
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 20px;
-}
-
-.containerAdmins button:hover {
   background-color: #ff6347;
 }
 

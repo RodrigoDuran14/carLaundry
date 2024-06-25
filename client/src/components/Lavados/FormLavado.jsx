@@ -61,8 +61,8 @@ const FormLavado = ({ onCreate }) => {
 
     try {
       await postLavados(newLavado);
-      onCreate();
       toast.success("Nuevo lavado creado con exito");
+      onCreate();
     } catch (error) {
       toast.error("Error al crear Lavado");
     }

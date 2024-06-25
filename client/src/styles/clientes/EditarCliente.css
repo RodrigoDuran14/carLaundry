@@ -1,10 +1,11 @@
 .container {
-  margin: 0 auto;
+  margin: auto;
 }
 
 form {
   display: flex;
   flex-direction: column;
+  margin: auto;
 }
 
 form input {

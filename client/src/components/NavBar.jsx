@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Link} from "react-router-dom"
-import "../styles/NavBar.css"
+import LogoutBtn from "./LogoutBtn"
+import "../styles/other/NavBar.css"
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -21,11 +22,13 @@ const NavBar = () => {
       </div>
       <div className={`navlinks ${menuOpen ? "open" : ""}`}>
       <ul className='navul'>
+        <li className='navli'><Link to="/home" onClick={closeMenu} >Inicio</Link></li>
         <li className='navli'><Link to="/clientes" onClick={closeMenu} >Clientes</Link></li>
         <li className='navli'><Link to="/empleados" onClick={closeMenu}>Empleados</Link></li>
         <li className='navli'><Link to="/vehiculos" onClick={closeMenu}>Vehiculos</Link></li>
         <li className='navli'><Link to="/tipos-lavados" onClick={closeMenu}>Tipos de Lavados</Link></li>
         <li className='navli'><Link to="/lavados" onClick={closeMenu}>Lavados</Link></li> 
+        <li className='navli'><LogoutBtn /></li> 
       </ul>
       </div>
     </nav>

@@ -9,16 +9,18 @@ const {
   getLavadoById,
   updateActiveLavado,
   findLavado,
-  findLavadoByDate
+  findLavadoByDate,
+  notificar
 } = require("../controllers/lavado.controller");
 
 router.post("/lavado", postLavados);
 router.get("/lavados", getLavadoList);
 router.get("/lavado", findLavado);
+router.get("/notificar/:id", notificar);
 router.get("/lavadosDate", findLavadoByDate);
 router.get("/lavados/:id", getLavadoById);
 router.put("/lavados/:id", updateLavado);
-router.patch("/lavado/:id/inicio", inicioLavado);
+router.post("/lavado/:id/inicio", inicioLavado);
 router.patch("/lavado/:id/fin", finalizarLavado);
 router.patch("/lavados/:id", updateActiveLavado);
 
