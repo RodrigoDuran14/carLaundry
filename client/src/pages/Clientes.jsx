@@ -106,7 +106,7 @@ const Clientes = () => {
         <button onClick={() => setShowEliminados(!showEliminados)}>
           {showEliminados ? "Ocultar" : "Mostrar"} Clientes Eliminados
         </button>
-        {showEliminados.length > 0 && (
+        {showEliminados && (
           <table>
             <thead>
               <tr>

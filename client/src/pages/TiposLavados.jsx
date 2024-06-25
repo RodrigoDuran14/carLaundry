@@ -101,7 +101,7 @@ const TiposLavados = () => {
         <button onClick={() => setShowEliminados(!showEliminados)}>
           {showEliminados ? "Ocultar" : "Mostrar"} Tipos de Lavados Eliminados
         </button>
-        {showEliminados.length > 0 && (
+        {showEliminados && (
           <table>
             <thead>
               <tr>

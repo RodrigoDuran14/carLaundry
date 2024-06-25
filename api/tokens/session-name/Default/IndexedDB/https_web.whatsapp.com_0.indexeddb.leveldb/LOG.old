@@ -1,0 +1,18 @@
+2024/06/25-12:36:22.023 1f0c Reusing MANIFEST F:\todo\carLaundry\api\tokens\session-name\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/06/25-12:36:22.023 1f0c Recovering log #139
+2024/06/25-12:36:22.064 1f0c Reusing old log F:\todo\carLaundry\api\tokens\session-name\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000139.log 
+2024/06/25-12:36:23.901 13d0 Level-0 table #146: started
+2024/06/25-12:36:23.950 13d0 Level-0 table #146: 657532 bytes OK
+2024/06/25-12:36:23.966 13d0 Delete type=0 #139
+2024/06/25-12:36:23.967 1f0c Manual compaction at level-0 from '\x00%\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00&\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/06/25-12:36:25.490 2a50 Compacting 1@1 + 4@2 files
+2024/06/25-12:36:25.711 2a50 Generated table #147@1: 50014 keys, 2209471 bytes
+2024/06/25-12:36:25.828 2a50 Generated table #148@1: 23634 keys, 2194244 bytes
+2024/06/25-12:36:25.934 2a50 Generated table #149@1: 50986 keys, 1697437 bytes
+2024/06/25-12:36:25.935 2a50 Compacted 1@1 + 4@2 files => 6101152 bytes
+2024/06/25-12:36:25.950 2a50 compacted to: files[ 0 0 3 0 0 0 0 ]
+2024/06/25-12:36:25.951 2a50 Delete type=2 #138
+2024/06/25-12:36:25.951 2a50 Delete type=2 #141
+2024/06/25-12:36:25.951 2a50 Delete type=2 #142
+2024/06/25-12:36:25.951 2a50 Delete type=2 #143
+2024/06/25-12:36:25.951 2a50 Delete type=2 #146

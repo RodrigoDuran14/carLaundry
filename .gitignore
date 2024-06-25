@@ -76,3 +76,5 @@ storybook-static/
 
 # Ignore all .txt files
 *.txt
+
+.wwebjs_auth

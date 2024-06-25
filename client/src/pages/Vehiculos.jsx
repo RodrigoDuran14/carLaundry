@@ -105,7 +105,7 @@ const Vehiculos = () => {
         <button onClick={() => setShowEliminados(!showEliminados)}>
           {showEliminados ? "Ocultar" : "Mostrar"} Vehiculos Eliminados
         </button>
-        {showEliminados.length > 0 && (
+        {showEliminados && (
           <table>
             <thead>
               <tr>
