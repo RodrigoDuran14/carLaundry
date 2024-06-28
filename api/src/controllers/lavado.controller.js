@@ -2,10 +2,8 @@ const LavadosModel = require("../models/lavado.model");
 const TiposDeLavadosModel = require("../models/tiposDeLavado.model");
 const EmpleadosModel = require("../models/Empleado.model");
 const { sendEmail } = require("../services/resendClient");
-//const {Resend} = require('resend');
 const { getClient } = require("../services/venomClient");
 require("dotenv").config();
-//const client = require("../services/whatsappClient");
 
 const postLavados = async (req, res, next) => {
   try {
@@ -47,7 +45,7 @@ const inicioLavado = async (req, res, next) => {
     console.log("Lavadores recibidos del cuerpo:", lavadores);
 
     if (!Array.isArray(lavadores)) {
-      lavadores = [lavadores]; 
+      lavadores = [lavadores];
     }
 
     const lavado = await LavadosModel.findById(id)
@@ -76,7 +74,7 @@ const inicioLavado = async (req, res, next) => {
 
     res.status(200).send(lavado);
   } catch (error) {
-    console.error("Error en inicioLavado:", error); 
+    console.error("Error en inicioLavado:", error);
     next(error);
   }
 };
@@ -136,8 +134,12 @@ const notificar = async (req, res, next) => {
       if (cliente.mail) {
         const emailSubject = "Tu vehículo está listo";
         const emailText = `Hola ${cliente.nombre},\n\nTu vehículo ${vehiculo.marca} ${vehiculo.modelo} - ${vehiculo.matricula} ya está listo para retirarlo.\n\n Gracias por confiar en nosotros! \nCARLAUNDRY`;
-        const result2 = await sendEmail(cliente.mail, emailSubject, emailText);
-        console.log("Mensaje mail enviado:", result2);
+        try {
+          const emailResult = await sendEmail(cliente.mail, emailSubject, emailText);
+          console.log("Mensaje de correo enviado controler:", emailResult);
+        } catch (error) {
+          console.error("Error enviando correo 1:", emailError);
+        }
       }
 
       res.status(200).send({ success: "Notificación enviada" });
@@ -145,12 +147,10 @@ const notificar = async (req, res, next) => {
       console.error("Error enviando mensaje:", error);
       next(error);
     }
-
   } catch (error) {
     next(error);
   }
 };
-
 
 const getLavadoList = async (req, res, next) => {
   try {

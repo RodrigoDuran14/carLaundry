@@ -36,7 +36,7 @@ const BuscadorVehiculos = ({ onSelect }) => {
       />
       <ul>
         {vehiculos.map((vehiculo) => (
-          <li key={vehiculo.id} onClick={() => onSelect(vehiculo)}>
+          <li key={vehiculo._id} onClick={() => onSelect(vehiculo)}>
             {vehiculo.marca} - {vehiculo.modelo} - {vehiculo.matricula}
           </li>
         ))}

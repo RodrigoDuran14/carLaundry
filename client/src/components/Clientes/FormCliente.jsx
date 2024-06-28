@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postClient } from "../../services/api";
+import { postClient} from "../../services/api";
 import BuscadorVehiculos from "../Vehiculos/BuscadorVehiculos";
 import { toast } from "react-toastify";
 import "../../styles/clientes/FormCliente.css"
@@ -41,9 +41,21 @@ const FormCliente = ({ onCreate }) => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-    await postClient(form);
-    onCreate();
-    toast.success("Nuevo cliente creado con exito")
+
+      if (
+        !form.nombre ||
+        !form.dni ||
+        !form.celular ||
+        !form.mail ||
+        !form.vehiculoId
+      ) {
+        toast.error("Todos los campos son obligatorios");
+        return
+      }
+      await postClient(form);
+      onCreate();
+      toast.success("Nuevo cliente creado con exito")
+      navigate("/clientes");
     } catch (error) {
       toast.error("Error al crear nuevo cliente")
     }
@@ -83,6 +95,7 @@ const FormCliente = ({ onCreate }) => {
           <BuscadorVehiculos onSelect={handleSelectVehiculo} />
           <button onClick={()=>navigate("/vehiculo-nuevo")}>Agregar Vehiculo</button>
         </div>)}
+        
         <button type="submit">Agregar Cliente</button>
       </form>
     </div>

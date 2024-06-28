@@ -46,22 +46,20 @@ const getEmpleadoList = async (req, res, next) => {
 const getEmpleadoById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await EmpleadosModel.findById({ _id: id }).populate(
-      {
-        path: "lavados",
+    const empleado = await EmpleadosModel.findById({ _id: id }).populate({
+      path: "lavados",
+      populate: {
+        path: "clienteId",
         populate: {
-          path: "clienteId",
-          populate: {
-            path: "vehiculo",
-            model: "Vehiculos",
-            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
-          },
-          model: "Cliente",
-          select: "nombre dni mail celular", // Campos a incluir del cliente
+          path: "vehiculo",
+          model: "Vehiculos",
+          select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
         },
-        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
-      }
-    );
+        model: "Cliente",
+        select: "nombre dni mail celular", // Campos a incluir del cliente
+      },
+      select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+    });
     !empleado ? res.status(404).send() : res.status(200).send(empleado);
   } catch (error) {
     next(error);
@@ -78,22 +76,20 @@ const findEmpleado = async (req, res, next) => {
     if (dni) empleadoQuery.dni = Number(dni);
     if (celular) empleadoQuery.celular = Number(celular);
 
-    const empleado = await EmpleadosModel.find(empleadoQuery).populate(
-      {
-        path: "lavados",
+    const empleado = await EmpleadosModel.find(empleadoQuery).populate({
+      path: "lavados",
+      populate: {
+        path: "clienteId",
         populate: {
-          path: "clienteId",
-          populate: {
-            path: "vehiculo",
-            model: "Vehiculos",
-            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
-          },
-          model: "Cliente",
-          select: "nombre dni mail celular", // Campos a incluir del cliente
+          path: "vehiculo",
+          model: "Vehiculos",
+          select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
         },
-        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
-      }
-    );
+        model: "Cliente",
+        select: "nombre dni mail celular", // Campos a incluir del cliente
+      },
+      select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+    });
 
     res.status(200).send(empleado);
   } catch (error) {
@@ -106,24 +102,21 @@ const updateEmpleado = async (req, res, next) => {
     const { id } = req.params;
     const update = req.body;
 
-    if(update.password){
-      const saltRounds = 10
-      const hashedPassword = await bcrypt.hash(update.password, saltRounds)
-      update.password = hashedPassword
-    }else{
-      delete update.password
+    if (update.password) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(update.password, saltRounds);
+      update.password = hashedPassword;
     }
 
-    const updateEmpleado = await EmpleadosModel.findByIdAndUpdate(id, {
+    const updatedEmpleado = await EmpleadosModel.findByIdAndUpdate(id, {
       $set: update,
-    });
+    }, { new: true });
 
-    if (!updateEmpleado) {
+    if (!updatedEmpleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });
     }
 
-    await updateEmpleado.save()
-    res.status(200).send(update);
+    res.status(200).send(updatedEmpleado);
   } catch (error) {
     next(error);
   }
@@ -132,22 +125,20 @@ const updateEmpleado = async (req, res, next) => {
 const updateActiveEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await EmpleadosModel.findById(id).populate(
-      {
-        path: "lavados",
+    const empleado = await EmpleadosModel.findById(id).populate({
+      path: "lavados",
+      populate: {
+        path: "clienteId",
         populate: {
-          path: "clienteId",
-          populate: {
-            path: "vehiculo",
-            model: "Vehiculos",
-            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
-          },
-          model: "Cliente",
-          select: "nombre dni mail celular", // Campos a incluir del cliente
+          path: "vehiculo",
+          model: "Vehiculos",
+          select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
         },
-        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
-      }
-    );
+        model: "Cliente",
+        select: "nombre dni mail celular", // Campos a incluir del cliente
+      },
+      select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+    });
 
     if (!empleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });
@@ -165,22 +156,20 @@ const updateActiveEmpleado = async (req, res, next) => {
 const updateAdminEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await EmpleadosModel.findById(id).populate(
-      {
-        path: "lavados",
+    const empleado = await EmpleadosModel.findById(id).populate({
+      path: "lavados",
+      populate: {
+        path: "clienteId",
         populate: {
-          path: "clienteId",
-          populate: {
-            path: "vehiculo",
-            model: "Vehiculos",
-            select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
-          },
-          model: "Cliente",
-          select: "nombre dni mail celular", // Campos a incluir del cliente
+          path: "vehiculo",
+          model: "Vehiculos",
+          select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
         },
-        select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
-      }
-    );
+        model: "Cliente",
+        select: "nombre dni mail celular", // Campos a incluir del cliente
+      },
+      select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
+    });
 
     if (!empleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });
@@ -239,7 +228,9 @@ const login = async (req, res, next) => {
     const { mail, password } = req.body;
 
     if (!mail || !password) {
-      return res.status(400).send({ error: "Correo electrónico y contraseña son obligatorios" });
+      return res
+        .status(400)
+        .send({ error: "Correo electrónico y contraseña son obligatorios" });
     }
 
     const empleado = await EmpleadosModel.findOne({ mail });
@@ -248,7 +239,6 @@ const login = async (req, res, next) => {
       return res.status(404).send({ error: "Empleado no encontrado" });
     }
 
-    // Compara la contraseña ingresada con la contraseña almacenada en la base de datos
     const isPasswordValid = await bcrypt.compare(password, empleado.password);
 
     if (!isPasswordValid) {
@@ -285,6 +275,25 @@ const login = async (req, res, next) => {
   }
 };
 
+const verifyToken = (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ valid: false });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ valid: false });
+      }
+      res.json({ valid: true });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   postEmpleado,
   getEmpleadoList,
@@ -295,4 +304,5 @@ module.exports = {
   updateAdminEmpleado,
   createPassword,
   login,
+  verifyToken,
 };

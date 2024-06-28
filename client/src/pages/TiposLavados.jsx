@@ -44,6 +44,7 @@ const TiposLavados = () => {
 
   const handleCreate = () => {
     loadTiposLavado();
+    setShowFormTiposLavado(!showFormTiposLavado);
   };
 
   const handleAddTiposLavadoClick = () => {

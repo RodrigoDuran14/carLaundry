@@ -32,6 +32,16 @@ const EditarVehiculo = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      if (
+        !vehiculo.marca ||
+        !vehiculo.modelo ||
+        !vehiculo.matricula ||
+        !vehiculo.color ||
+        !vehiculo.tipo
+      ) {
+        toast.error("Todos los campos son obligatorios");
+        return
+      }
       await updateVehiculo(id, vehiculo);
       toast.success("Vehiculo actualizado correctamente");
       navigate("/vehiculos");

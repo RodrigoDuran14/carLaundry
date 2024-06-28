@@ -125,7 +125,11 @@ const Home = () => {
       const lavadoresIds = selectedLavadores.map((l) => l.value);
       console.log("Lavadores seleccionados:", lavadoresIds);
 
-      await inicioLavado(currentLavadoId, {lavadoresIds});
+      const newLavador = {
+        lavadores: lavadoresIds
+      }
+
+      await inicioLavado(currentLavadoId, newLavador);
       toast.success("Lavado iniciado con éxito");
       setShowIniciarForms([]);
       setSelectedLavadores([]);

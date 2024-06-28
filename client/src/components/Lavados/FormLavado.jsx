@@ -4,6 +4,7 @@ import {
   getTiposLavadoList,
   getClientList,
 } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Select from "react-select"
 
@@ -15,6 +16,7 @@ const FormLavado = ({ onCreate }) => {
   const [selectedCliente, setSelectedCliente] = useState(null);
   const [filteredVehiculos, setFilteredVehiculos] = useState([]);
   const [selectedVehiculo, setSelectedVehiculo] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLavados = async () => {
@@ -44,6 +46,7 @@ const FormLavado = ({ onCreate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
     if (
       !selectedTiposDeLavado.length ||
       !selectedCliente ||
@@ -59,10 +62,10 @@ const FormLavado = ({ onCreate }) => {
       vehiculoId: selectedVehiculo.value,
     };
 
-    try {
       await postLavados(newLavado);
       toast.success("Nuevo lavado creado con exito");
       onCreate();
+      navigate("/lavados")
     } catch (error) {
       toast.error("Error al crear Lavado");
     }

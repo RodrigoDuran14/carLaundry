@@ -153,6 +153,32 @@ const updateActiveClient = async (req, res, next) => {
   }
 };
 
+const addVehiculo = async (req,res,next) =>{
+  const {clienteId,vehiculoId} = req.body
+
+  try {
+    const vehiculo = await VehiculosModel.findById(vehiculoId);
+    if (!vehiculo) {
+      return res.status(404).json({ error: "El vehículo no existe" });
+    }
+
+    const cliente = await ClienteModel.findById(clienteId);
+    if (!cliente) {
+      return res.status(404).json({ error: "El cliente no existe" });
+    }
+
+    if (!cliente.vehiculo.includes(vehiculoId)) {
+      cliente.vehiculo.push(vehiculoId );
+      await cliente.save();
+      res.status(200).json({ message: "Vehículo agregado exitosamente al cliente" });
+    } else {
+      res.status(400).json({ error: "El vehículo ya está asociado a este cliente" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error al agregar el vehículo al cliente" });
+  }
+}
+
 module.exports = {
   getClientList,
   getClientById,
@@ -161,4 +187,5 @@ module.exports = {
   getClientsByVehiculo,
   updateClient,
   updateActiveClient,
+  addVehiculo
 };

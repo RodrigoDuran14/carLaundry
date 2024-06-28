@@ -31,6 +31,10 @@ const EditarTipoLavado = () => {
   const handleSubmit = async (e)=>{
     try {
       e.preventDefault()
+      if (!tiposLavados.titulo || !tiposLavados.descripcion || !tiposLavados.precio ) {
+        toast.error("Todos los campos son obligatorios");
+        return;
+      }
       await updateTiposLavado(id, tiposLavados)
       toast.success("Tipo de Lavado actualizado correctamente")
       navigate("/tipos-lavados")

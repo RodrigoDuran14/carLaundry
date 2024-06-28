@@ -49,6 +49,7 @@ const Lavados = () => {
 
   const handleCreate = () => {
     loadLavados();
+    setShowFormLavados(!showFormLavados);
   };
 
   const handleAddLavadoClick = () => {

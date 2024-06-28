@@ -67,6 +67,7 @@ const Empleados = () => {
 
   const handleCreate = () => {
     loadEmpleados();
+    setShowFormEmpleado(!showFormEmpleado);
   };
 
   const handleAddEmpleadoClick = () => {

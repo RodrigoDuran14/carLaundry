@@ -9,7 +9,8 @@ const {
   updateAdminEmpleado,
   updateActiveEmpleado,
   createPassword,
-  login
+  login,
+  verifyToken
 } = require("../controllers/empleado.controller");
 
 router.get("/empleados", getEmpleadoList);
@@ -21,5 +22,7 @@ router.post("/empleado", postEmpleado);
 router.patch("/empleado/:id", updateActiveEmpleado);
 router.patch("/empleadoadmin/:id", updateAdminEmpleado);
 router.post("/login", login)
+router.post("/verify-token", verifyToken)
+
 
 module.exports = router;

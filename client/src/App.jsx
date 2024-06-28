@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { PrivateRoute } from "./components/PrivateRoute";
 import NavBar from "./components/NavBar";
@@ -19,33 +19,35 @@ import EditarEmpleado from "./components/Empleados/EditarEmpleado";
 import EditarLavados from "./components/Lavados/EditarLavados";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import { useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/"
+
   return (
-    <>
-      <NavBar />
+    <AuthProvider>
+      {!isLoginPage && <NavBar />}
       <Routes>
-        <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/clientes" element={<Clientes />} />
-        <Route path="/cliente-nuevo" element={<FormCliente />} />
-        <Route path="/clientes/:id" element={<EditarCliente />} />
-        <Route path="/empleados" element={<Empleados />} />
-        <Route path="/empleado-nuevo" element={<FormEmpleado />} />
-        <Route path="/empleados/:id" element={<EditarEmpleado />} />
-        <Route path="/vehiculos" element={<Vehiculos />} />
-        <Route path="/vehiculo-nuevo" element={<FormVehiculo />} />
-        <Route path="/vehiculos/:id" element={<EditarVehiculo />} />
-        <Route path="/tipos-lavados" element={<TiposLavados />} />
-        <Route path="/tipos-lavado-nuevo" element={<FormTiposLavado />} />
-        <Route path="/tipos-lavados/:id" element={<EditarTipoLavado />} />
-        <Route path="/lavados" element={<Lavados />} />
-        <Route path="/lavado-nuevo" element={<FormLavado />} />
-        <Route path="/lavados/:id" element={<EditarLavados />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={<PrivateRoute element={Home} />} />
+        <Route path="/clientes" element={<PrivateRoute element={Clientes} />} />
+        <Route path="/cliente-nuevo" element={<PrivateRoute element={FormCliente} />} />
+        <Route path="/clientes/:id" element={<PrivateRoute element={EditarCliente} />} />
+        <Route path="/empleados" element={<PrivateRoute element={Empleados} />} />
+        <Route path="/empleado-nuevo" element={<PrivateRoute element={FormEmpleado} />} />
+        <Route path="/empleados/:id" element={<PrivateRoute element={EditarEmpleado} />} />
+        <Route path="/vehiculos" element={<PrivateRoute element={Vehiculos} />} />
+        <Route path="/vehiculo-nuevo" element={<PrivateRoute element={FormVehiculo} />} />
+        <Route path="/vehiculos/:id" element={<PrivateRoute element={EditarVehiculo} />} />
+        <Route path="/tipos-lavados" element={<PrivateRoute element={TiposLavados} />} />
+        <Route path="/tipos-lavado-nuevo" element={<PrivateRoute element={FormTiposLavado} />} />
+        <Route path="/tipos-lavados/:id" element={<PrivateRoute element={EditarTipoLavado} />} />
+        <Route path="/lavados" element={<PrivateRoute element={Lavados} />} />
+        <Route path="/lavado-nuevo" element={<PrivateRoute element={FormLavado} />} />
+        <Route path="/lavados/:id" element={<PrivateRoute element={EditarLavados} />} />
       </Routes>
-    </>
+    </AuthProvider>
   );
 }
 

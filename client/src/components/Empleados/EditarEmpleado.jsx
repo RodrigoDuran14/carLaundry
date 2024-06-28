@@ -9,6 +9,8 @@ const EditarEmpleado = () => {
   const navigate = useNavigate();
   const [empleado, setEmpleado] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showFormPassword, setShowFormPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     try {
@@ -32,7 +34,21 @@ const EditarEmpleado = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-    await updateEmpleado(id, empleado);
+      if (empleado.admin && showFormPassword && !newPassword) {
+        toast.error("La contraseña no puede quedar en blanco");
+        return;
+      }
+      if (!empleado.nombre || !empleado.dni || !empleado.celular || !empleado.mail) {
+        toast.error("Todos los campos son obligatorios");
+        return;
+      }
+
+      const updatedEmpleado = {...empleado}
+      if(showFormPassword){
+        updatedEmpleado.password = newPassword
+      }
+
+    await updateEmpleado(id, updatedEmpleado);
     toast.success("Empleado actualizado correctamente")
     navigate("/empleados");
     } catch (error) {
@@ -44,29 +60,42 @@ const EditarEmpleado = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleShowFormPassword = ()=> {
+    setShowFormPassword(!showFormPassword)
+    setNewPassword("");
+  }
+
+  const handlePassword = (e)=>{
+    setNewPassword(e.target.value)
+  }
+
   if (!empleado) return <div>Cargando...</div>;
   return (
     <div className="container">
       <h1>Editar Empleado</h1>
       <form onSubmit={handleSubmit}>
+        <label>Nombre</label>
         <input
           type="text"
           name="nombre"
           value={empleado.nombre}
           onChange={handleChange}
         />
+        <label>DNI</label>
         <input
           type="number"
           name="dni"
           value={empleado.dni}
           onChange={handleChange}
         />
+        <label>Mail</label>
         <input
           type="text"
           name="mail"
           value={empleado.mail}
           onChange={handleChange}
         />
+        <label>Celular</label>
         <input
           type="number"
           name="celular"
@@ -74,17 +103,23 @@ const EditarEmpleado = () => {
           onChange={handleChange}
         />
         {empleado.admin && (
+          <button type="button" onClick={handleShowFormPassword}>
+            {!showFormPassword ? "Cambiar contraseña": "Ocultar"}
+          </button>
+        )}
+        {showFormPassword && (
           <div>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={empleado.password}
-              onChange={handleChange}
-            />
-            <button type="button" onClick={toggleShowPassword}>
-              {showPassword ? "Ocultar" : "Mostrar"} Contraseña
-            </button>
-          </div>
+          <p>Nueva Contraseña</p>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            value={newPassword}
+            onChange={handlePassword}
+          />
+          <button type="button" onClick={toggleShowPassword}>
+            {showPassword ? "Ocultar" : "Mostrar"} Contraseña
+          </button>
+        </div>
         )}
         <button type="submit">Actualizar</button>
       </form>

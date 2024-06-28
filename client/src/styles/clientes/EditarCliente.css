@@ -38,3 +38,11 @@ form button:hover {
   font-size: 18px;
   color: #666;
 }
+
+.buscador-container{
+  gap: 10px;
+}
+
+.btn{
+  margin: 10px;
+}

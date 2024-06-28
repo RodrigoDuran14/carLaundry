@@ -4,7 +4,7 @@ const fs = require('fs');
 const tokenPath = './tokens/session-name';
 
 //if (fs.existsSync(tokenPath)) {
-//  fs.rmSync(tokenPath, { recursive: false });
+//  fs.rmSync(tokenPath, { recursive: true });
 //}
 
 let client;

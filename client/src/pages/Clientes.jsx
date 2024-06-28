@@ -45,6 +45,7 @@ const Clientes = () => {
 
   const handleCreate = () => {
     loadClientes();
+    setShowFormCliente(!showFormCliente);
   };
 
   const handleAddClientClick = () => {
@@ -84,11 +85,13 @@ const Clientes = () => {
               <tr key={cliente._id}>
                 <td>{cliente.nombre}</td>
                 <td>{cliente.dni}</td>
+                <td >
                 {cliente.vehiculo.map((v) => (
-                  <td key={v._id}>
+                  <p key={v._id}>
                     {v.marca} {v.modelo}
+                  </p>
+                  ))}
                   </td>
-                ))}
                 <td>
                   <button onClick={() => navigate(`/clientes/${cliente._id}`)}>
                     Editar

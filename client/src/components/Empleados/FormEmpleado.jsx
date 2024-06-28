@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { postEmpleado } from "../../services/api";
 import { toast } from "react-toastify";
-import "../../styles/empleados/formEmpleado.css"
+import "../../styles/empleados/formEmpleado.css";
 
 const FormEmpleado = ({ onCreate }) => {
   const [form, setForm] = useState({
@@ -10,7 +11,7 @@ const FormEmpleado = ({ onCreate }) => {
     celular: 0,
     mail: "",
   });
-
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({
@@ -22,11 +23,17 @@ const FormEmpleado = ({ onCreate }) => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+
+      if (!form.nombre || !form.dni || !form.celular || !form.mail) {
+        toast.error("Todos los campos son obligatorios");
+        return;
+      }
       await postEmpleado(form);
       onCreate();
-      toast.success("Nuevo empleado creado con exito")
+      toast.success("Nuevo empleado creado con exito");
+      navigate("/empleado")
     } catch (error) {
-      toast.error("Error al crear nuevo Empleado")
+      toast.error("Error al crear nuevo Empleado");
     }
   };
 

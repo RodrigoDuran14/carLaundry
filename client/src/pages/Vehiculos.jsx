@@ -44,6 +44,7 @@ const Vehiculos = () => {
 
   const handleCreate = () => {
     loadVehiculos();
+    setShowFormVehiculo(!showFormVehiculo);
   };
 
   const handleAddVehiculoClick = () => {
