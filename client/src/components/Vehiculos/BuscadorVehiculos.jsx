@@ -27,7 +27,7 @@ const BuscadorVehiculos = ({ onSelect }) => {
     }
   }, [search]);
   return (
-    <div>
+    <div className="buscador-containercliente">
       <input
         type="text"
         placeholder="Buscar vehiculo por marca"
@@ -37,7 +37,7 @@ const BuscadorVehiculos = ({ onSelect }) => {
       <ul>
         {vehiculos.map((vehiculo) => (
           <li key={vehiculo._id} onClick={() => onSelect(vehiculo)}>
-            {vehiculo.marca} - {vehiculo.modelo} - {vehiculo.matricula}
+            <p>{vehiculo.marca} - {vehiculo.modelo} - {vehiculo.matricula}</p>
           </li>
         ))}
       </ul>

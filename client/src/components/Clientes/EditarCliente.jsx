@@ -125,7 +125,7 @@ const EditarCliente = () => {
       <button className="btn" onClick={() => setShowBuscador(!showBuscador)}>
         {showBuscador ? "Cerrar Buscador" : "Agregar Vehiculo"}
       </button>
-      {showBuscador && <div className="buscador-container"><BuscadorVehiculos onSelect={handleSelectVehiculo} /></div>}
+      {showBuscador && <div className="buscador-containercliente"><BuscadorVehiculos onSelect={handleSelectVehiculo} /></div>}
     </div>
   );
 };

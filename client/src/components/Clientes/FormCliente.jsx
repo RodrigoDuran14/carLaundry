@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postClient} from "../../services/api";
+import { postClient } from "../../services/api";
 import BuscadorVehiculos from "../Vehiculos/BuscadorVehiculos";
 import { toast } from "react-toastify";
-import "../../styles/clientes/FormCliente.css"
+import "../../styles/clientes/FormCliente.css";
 
 const FormCliente = ({ onCreate }) => {
   const [form, setForm] = useState({
@@ -14,9 +14,10 @@ const FormCliente = ({ onCreate }) => {
     vehiculoId: "",
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [showVehiculos, setShowVehiculos] = useState(false);
+  const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
 
   const handleChange = (e) => {
     setForm({
@@ -31,10 +32,11 @@ const FormCliente = ({ onCreate }) => {
         ...form,
         vehiculoId: vehiculo._id,
       });
+      setVehiculoSeleccionado(vehiculo);
       setShowVehiculos(false);
-      toast.success("Vehiculo seleccionado correctamente")
+      toast.success("Vehiculo seleccionado correctamente");
     } catch (error) {
-      toast.error("Error al seleccionar vehiculo")
+      toast.error("Error al seleccionar vehiculo");
     }
   };
 
@@ -50,14 +52,14 @@ const FormCliente = ({ onCreate }) => {
         !form.vehiculoId
       ) {
         toast.error("Todos los campos son obligatorios");
-        return
+        return;
       }
       await postClient(form);
       onCreate();
-      toast.success("Nuevo cliente creado con exito")
+      toast.success("Nuevo cliente creado con exito");
       navigate("/clientes");
     } catch (error) {
-      toast.error("Error al crear nuevo cliente")
+      toast.error("Error al crear nuevo cliente");
     }
   };
   return (
@@ -91,11 +93,23 @@ const FormCliente = ({ onCreate }) => {
         <button type="button" onClick={() => setShowVehiculos(!showVehiculos)}>
           Seleccionar Vehiculo
         </button>
-        {showVehiculos && (<div className="buscador">
-          <BuscadorVehiculos onSelect={handleSelectVehiculo} />
-          <button onClick={()=>navigate("/vehiculo-nuevo")}>Agregar Vehiculo</button>
-        </div>)}
-        
+        {showVehiculos && (
+          <div className="buscador">
+            <BuscadorVehiculos onSelect={handleSelectVehiculo} />
+            <button onClick={() => navigate("/vehiculo-nuevo")}>
+              Agregar Vehiculo
+            </button>
+          </div>
+        )}
+        {vehiculoSeleccionado && (
+          <div className="vehiculo-seleccionado">
+            <h3>Vehículo Seleccionado:</h3>
+            <p>
+              {vehiculoSeleccionado.marca} - {vehiculoSeleccionado.modelo} -{" "}
+              {vehiculoSeleccionado.matricula}
+            </p>
+          </div>
+        )}
         <button type="submit">Agregar Cliente</button>
       </form>
     </div>

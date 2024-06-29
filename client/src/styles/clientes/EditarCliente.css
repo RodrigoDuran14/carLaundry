@@ -39,8 +39,17 @@ form button:hover {
   color: #666;
 }
 
-.buscador-container{
-  gap: 10px;
+.buscador-containercliente{
+  margin: auto;
+  border: 1px solid white;
+  border-radius: 10px;
+  width: 300px;
+  padding: 10px;
+}
+
+.buscador-containercliente ul li {
+  margin: auto;
+  padding: 5px;
 }
 
 .btn{
