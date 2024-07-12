@@ -7,16 +7,18 @@ const lavadoSchema = new mongoose.Schema({
   horarioFin: {
     type: Date,
   },
-  lavador: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Empleado",
-    required: true
+  total: {
+    type: Number,
   },
+  lavador: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Empleados",
+  }],
   estadoDelLavado: {
     type: String,
     enum: ["Pendiente", "En progreso", "Terminado"],
     required: true,
-    default: "pendiente",
+    default: "Pendiente",
   },
   tipoLavado: [
     {
@@ -32,7 +34,7 @@ const lavadoSchema = new mongoose.Schema({
   },
   vehiculoId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Vehiculo",
+    ref: "Vehiculos",
     required: true
   },
   activo: {
@@ -40,4 +42,11 @@ const lavadoSchema = new mongoose.Schema({
     default: true,
     required: true,
   },
+},{
+  timestamps:true,
+  versionKey:false
 })
+
+const LavadosModel = mongoose.model("Lavados", lavadoSchema);
+
+module.exports = LavadosModel;

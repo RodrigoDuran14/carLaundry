@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const clienteSchema = new mongoose.Schema({
   nombre: {
     type: String,
-    required: true,
+    required: [true, "El campo Nombre es obligatorio"],
   },
   dni: {
     type: Number,
-    required: true,
+    required: [true, "El campo Dni es obligatorio"],
   },
   vehiculo: [
     {
@@ -18,7 +18,7 @@ const clienteSchema = new mongoose.Schema({
   ],
   celular: {
     type: Number,
-    required: true,
+    required: [true, "El campo Celular es obligatorio"],
   },
   mail: {
     type: String,

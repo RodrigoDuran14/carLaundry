@@ -1,0 +1,17 @@
+ul{
+  list-style: none;
+  border-radius: 20px;
+  margin-left: -40px;
+}
+
+ul :hover{
+  color: white;
+  transform: scale(1.1);
+}
+
+ul li {
+  font-weight: 600;
+  padding: 5px;
+  border-radius: 25px;
+  text-align: center;
+}

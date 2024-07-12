@@ -1,0 +1,110 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+.buscador-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.add-client-btn {
+  margin-top: -10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-client-btn:hover {
+  background-color: #ff6347;
+}
+
+.tables {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+table thead {
+  background-color: #333;
+  color: #fff;
+}
+
+table th,
+table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f4f4f4;
+}
+
+table button {
+  padding: 6px 12px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 3px;
+}
+
+table button:hover {
+  background-color: #ff6347;
+}
+
+.containerEliminados button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.containerEliminados button:hover {
+  background-color: #ff6347;
+}
+
+.form-container {
+  margin-top: 20px;
+}
+
+.buttons-section{
+  margin-bottom: 50px;
+}
+
+.buttons-section button{
+  margin: 10px;
+}
+
+.form-buttons-section button{
+  margin: 10px;
+}
+@media (max-width: 768px){
+  .buscador-container{
+    display: block;  
+  }
+  
+
+}

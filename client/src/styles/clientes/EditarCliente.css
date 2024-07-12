@@ -1,0 +1,57 @@
+.container {
+  margin: auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+form input {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  text-align: center;
+}
+
+form button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+form button:hover {
+  background-color: #ff6347;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+}
+
+.buscador-containercliente{
+  margin: auto;
+  border: 1px solid white;
+  border-radius: 10px;
+  width: 300px;
+  padding: 10px;
+}
+
+.buscador-containercliente ul li {
+  margin: auto;
+  padding: 5px;
+}
+
+.btn{
+  margin: 10px;
+}

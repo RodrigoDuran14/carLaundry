@@ -1,0 +1,81 @@
+
+.buscadorfecha-container {
+  margin: auto;
+  justify-content: center;
+}
+
+.buscadorfecha-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buscadorfecha-container label {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.buscadorfecha-container input {
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.buscadorfecha-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.buscadorfecha-container button:hover {
+  background-color: #ff6347;
+}
+
+.formFecha{
+  margin: auto;
+  margin-bottom: 50px;
+}
+
+.ventas-section{
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 400px;
+  margin: auto;
+  margin-bottom: 50px;
+}
+
+.resultados-container {
+  margin-top: 20px;
+}
+
+.resultados-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.resultados-container th,
+.resultados-container td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.resultados-container th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.resultados-container tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.resultados-container tr:hover {
+  background-color: #ddd;
+}
