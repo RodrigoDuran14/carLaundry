@@ -1,6 +1,7 @@
 const EmpleadosModel = require("../models/Empleado.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const axios = require('axios')
 require("dotenv").config();
 
 const postEmpleado = async (req, res, next) => {
@@ -125,20 +126,7 @@ const updateEmpleado = async (req, res, next) => {
 const updateActiveEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await EmpleadosModel.findById(id).populate({
-      path: "lavados",
-      populate: {
-        path: "clienteId",
-        populate: {
-          path: "vehiculo",
-          model: "Vehiculos",
-          select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
-        },
-        model: "Cliente",
-        select: "nombre dni mail celular", // Campos a incluir del cliente
-      },
-      select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
-    });
+    const empleado = await EmpleadosModel.findById(id);
 
     if (!empleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });
@@ -156,20 +144,7 @@ const updateActiveEmpleado = async (req, res, next) => {
 const updateAdminEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await EmpleadosModel.findById(id).populate({
-      path: "lavados",
-      populate: {
-        path: "clienteId",
-        populate: {
-          path: "vehiculo",
-          model: "Vehiculos",
-          select: "marca modelo matricula color tipo", // Campos a incluir del vehículo
-        },
-        model: "Cliente",
-        select: "nombre dni mail celular", // Campos a incluir del cliente
-      },
-      select: "horarioInicio horarioFin total ", // Campos a incluir del lavado
-    });
+    const empleado = await EmpleadosModel.findById(id);
 
     if (!empleado) {
       return res.status(404).send({ error: "Empleado no encontrado" });

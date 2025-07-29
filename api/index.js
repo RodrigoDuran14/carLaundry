@@ -20,20 +20,20 @@ app.use(morgan("dev"));
 
 //rutas
 //app.use('/tarea', router)
-app.use("/api", clienteRoutes);
+app.use("/api", clienteRoutes)
 app.use("/api", vehiculoRoutes)
 app.use("/api", TiposDeLavadosRoutes)
 app.use("/api", EmpleadoRoutes)
 app.use("/api", LavadoRoutes)
 
 // Inicializar Venom
-initializeVenom()
-  .then(() => {
-    console.log('Venom client initialized successfully');
-  })
-  .catch((error) => {
-    console.error('Error initializing Venom client:', error);
-  });
+//initializeVenom()
+//.then(() => {
+//  console.log('Venom client initialized successfully');
+//})
+//.catch((error) => {
+//  console.error('Error initializing Venom client:', error);
+//});
 
 
 

@@ -81,3 +81,22 @@ storybook-static/
 
 api/.wwebjs_auth
 api/tokens
+
+
+# Archivos de entorno y configuración
+__pycache__/       # Cache de Python
+*.pyc              # Archivos compilados de Python
+*.pyo              # Archivos optimizados de Python
+
+# Dependencias y entornos virtuales
+venv/              # Entorno virtual de Python
+*.egg-info/        # Metadata de paquetes en Python
+
+# Archivos de imágenes o datos de usuario para reconocimiento facial
+images/            # Carpeta donde se almacenen las imágenes de referencia
+
+# Archivos de configuración de desarrollo
+.DS_Store          # Archivos específicos de macOS
+.idea/             # Configuración de JetBrains (como PyCharm o WebStorm)
+.vscode/           # Configuración de Visual Studio Code
+*.log              # Archivos de registro

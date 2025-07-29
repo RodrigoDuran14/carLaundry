@@ -34,7 +34,7 @@ const empleadoSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     required: true,
-  },
+  }
 },{
   timestamps:true,
   versionKey:false
