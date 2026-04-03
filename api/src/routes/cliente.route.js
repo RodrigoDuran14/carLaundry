@@ -18,6 +18,6 @@ router.get("/clientevehiculo", getClientsByVehiculo);
 router.post("/cliente", postClient);
 router.post("/clientesvehiculo", addVehiculo);
 router.put("/cliente/:id", updateClient);
-router.patch("/cliente/:id", updateActiveClient)
+router.patch("/cliente/:id", updateActiveClient);
 
 module.exports = router;

@@ -7,8 +7,9 @@ require("dotenv").config();
 
 const postLavados = async (req, res, next) => {
   try {
-    const { tipoLavado, clienteId, vehiculoId } = req.body;
+    const { tipoLavado, clienteId, vehiculoId, lavador, iniciarAhora, observaciones } = req.body;
 
+    // Validar tipos de lavado
     const tipoLavados = await TiposDeLavadosModel.find({
       _id: { $in: tipoLavado },
     });
@@ -16,21 +17,49 @@ const postLavados = async (req, res, next) => {
       return res.status(404).send({ error: "Tipos de lavado no encontrados" });
     }
 
+    // Calcular total
     const total = tipoLavados.reduce(
       (suma, tipoLavado) => suma + tipoLavado.precio,
       0
     );
 
+    // Determinar estado y horario de inicio
+    const estadoDelLavado = iniciarAhora ? "En progreso" : "Pendiente";
+    const horarioInicio = iniciarAhora ? Date.now() : null;
+
+    // Crear lavado
     const newLavado = new LavadosModel({
       tipoLavado,
       clienteId,
       vehiculoId,
-      estadoDelLavado: "Pendiente",
+      lavador: lavador || [],
+      estadoDelLavado,
+      horarioInicio,
       total: total,
+      observaciones: observaciones || '',
     });
 
     await newLavado.save();
-    res.status(201).send(newLavado);
+
+    // Si hay lavadores, actualizar sus registros
+    if (lavador && lavador.length > 0) {
+      for (const lavadorId of lavador) {
+        const empleado = await EmpleadosModel.findById(lavadorId);
+        if (empleado) {
+          empleado.lavados.push(newLavado._id);
+          await empleado.save();
+        }
+      }
+    }
+
+    // Populate para la respuesta
+    const lavadoCompleto = await LavadosModel.findById(newLavado._id)
+      .populate("lavador", "nombre dni mail")
+      .populate("clienteId", "nombre dni mail celular")
+      .populate("vehiculoId", "marca modelo matricula color tipo")
+      .populate("tipoLavado", "titulo descripcion precio");
+
+    res.status(201).send(lavadoCompleto);
   } catch (error) {
     next(error);
   }
@@ -39,10 +68,11 @@ const postLavados = async (req, res, next) => {
 const inicioLavado = async (req, res, next) => {
   try {
     const { id } = req.params;
-    let { lavadores } = req.body;
+    let { lavadores, reemplazar } = req.body;
 
     console.log("ID del lavado:", id);
     console.log("Lavadores recibidos del cuerpo:", lavadores);
+    console.log("Reemplazar:", reemplazar);
 
     if (!Array.isArray(lavadores)) {
       lavadores = [lavadores];
@@ -58,21 +88,56 @@ const inicioLavado = async (req, res, next) => {
       return res.status(404).send({ error: "Lavado no encontrado" });
     }
 
+    // Si ya tiene lavadores y se quiere reemplazar
+    if (lavado.lavador && lavado.lavador.length > 0 && reemplazar) {
+      // Eliminar el lavado de los empleados anteriores
+      for (const lavadorAntiguo of lavado.lavador) {
+        const empleado = await EmpleadosModel.findById(lavadorAntiguo._id);
+        if (empleado) {
+          empleado.lavados = empleado.lavados.filter(
+            (l) => l.toString() !== id
+          );
+          await empleado.save();
+        }
+      }
+      // Reemplazar con los nuevos
+      lavado.lavador = lavadores;
+    } else if (lavado.lavador && lavado.lavador.length > 0 && !reemplazar) {
+      // Agregar nuevos lavadores a los existentes
+      const lavadoresExistentes = lavado.lavador.map(l => l._id.toString());
+      const nuevosLavadores = lavadores.filter(l => !lavadoresExistentes.includes(l));
+      lavado.lavador = [...lavado.lavador, ...nuevosLavadores];
+    } else {
+      // No tiene lavadores, asignar los nuevos
+      lavado.lavador = lavadores;
+    }
+
     lavado.estadoDelLavado = "En progreso";
-    lavado.lavador = [...lavado.lavador, ...lavadores];
-    lavado.horarioInicio = Date.now();
+    
+    // Solo establecer horario de inicio si no existe
+    if (!lavado.horarioInicio) {
+      lavado.horarioInicio = Date.now();
+    }
 
     await lavado.save();
 
+    // Actualizar los empleados con el nuevo lavado
     for (const lavadorId of lavadores) {
       const empleado = await EmpleadosModel.findById(lavadorId);
-      if (empleado) {
+      if (empleado && !empleado.lavados.includes(id)) {
         empleado.lavados.push(id);
         await empleado.save();
       }
     }
 
-    res.status(200).send(lavado);
+    // Volver a populate para la respuesta
+    const lavadoActualizado = await LavadosModel.findById(id)
+      .populate("lavador", "nombre dni mail")
+      .populate("clienteId", "nombre dni mail celular")
+      .populate("vehiculoId", "marca modelo matricula color tipo")
+      .populate("tipoLavado", "titulo descripcion precio");
+
+    res.status(200).send(lavadoActualizado);
   } catch (error) {
     console.error("Error en inicioLavado:", error);
     next(error);
@@ -156,15 +221,7 @@ const getLavadoList = async (req, res, next) => {
   try {
     const allLavados = await LavadosModel.find()
       .populate("lavador", "nombre dni mail")
-      .populate({
-        path: "clienteId",
-        populate: {
-          path: "vehiculo",
-          model: "Vehiculos",
-          select: "marca modelo matricula color tipo",
-        },
-        select: "nombre dni mail celular vehiculo",
-      })
+      .populate("clienteId","nombre dni mail celular",)
       .populate("vehiculoId", "marca modelo matricula color tipo")
       .populate("tipoLavado", "titulo descripcion precio");
     res.status(200).send(allLavados);
@@ -178,15 +235,7 @@ const getLavadoById = async (req, res, next) => {
     const { id } = req.params;
     const lavado = await LavadosModel.findById({ _id: id })
       .populate("lavador", "nombre dni mail")
-      .populate({
-        path: "clienteId",
-        populate: {
-          path: "vehiculo",
-          model: "Vehiculos",
-          select: "marca modelo matricula color tipo",
-        },
-        select: "nombre dni mail celular vehiculo",
-      })
+      .populate("clienteId","nombre dni mail celular",)
       .populate("vehiculoId", "marca modelo matricula color tipo")
       .populate("tipoLavado", "titulo descripcion precio");
 

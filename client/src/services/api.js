@@ -1,94 +1,79 @@
-import axios from "axios";
+import axios from 'axios';
 
-const API_URL = "http://localhost:3001/api";
+const API_BASE_URL = 'http://localhost:3001/api'; // Ajusta según tu backend
 
-//=====================CLIENTES===========================
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-export const getClientList = () => axios.get(`${API_URL}/clientes`);
-export const getClientById = (id) => axios.get(`${API_URL}/cliente/${id}`);
-export const getClientsByName = (query) =>
-  axios.get(`${API_URL}/cliente`, { params: query });
-export const getClientsByVehiculo = (query) =>
-  axios.get(`${API_URL}/clientevehiculo`, { params: query });
-export const postClient = (cliente) =>
-  axios.post(`${API_URL}/cliente`, cliente);
-export const updateClient = (id, cliente) =>
-  axios.put(`${API_URL}/cliente/${id}`, cliente);
-export const updateActiveClient = (id) =>
-  axios.patch(`${API_URL}/cliente/${id}`);
-export const addVehiculo = (clienteId, vehiculoId) =>
-  axios.post(`${API_URL}/clientesvehiculo`, {clienteId,vehiculoId});
-
-//=====================VEHICULOS===========================
-
-export const getVehiculoList = () => axios.get(`${API_URL}/vehiculos`);
-export const findVehiculo = (query) =>
-  axios.get(`${API_URL}/vehiculo`, { params: query });
-export const getVehiculoById = (id) => axios.get(`${API_URL}/vehiculo/${id}`);
-export const postVehiculo = (vehiculo) =>
-  axios.post(`${API_URL}/vehiculo`, vehiculo);
-export const updateVehiculo = (id, vehiculo) =>
-  axios.put(`${API_URL}/vehiculo/${id}`, vehiculo);
-export const updateActiveVehiculo = (id) =>
-  axios.patch(`${API_URL}/vehiculo/${id}`);
-
-//=====================TIPOS DE LAVADOS===========================
-
-export const getTiposLavadoList = () => axios.get(`${API_URL}/tiposLavados`);
-export const getTiposLavadoById = (id) =>
-  axios.get(`${API_URL}/tiposLavado/${id}`);
-export const findTiposLavado = (query) =>
-  axios.get(`${API_URL}/tiposLavado`, { params: query });
-export const postTipoLavado = (tipoLavado) =>
-  axios.post(`${API_URL}/tiposLavado`, tipoLavado);
-export const updateTiposLavado = (id, tipoLavado) =>
-  axios.put(`${API_URL}/tiposLavado/${id}`, tipoLavado);
-export const updateActiveTiposLavado = (id) =>
-  axios.patch(`${API_URL}/tiposLavado/${id}`);
-
-//=====================EMPLEADOS==============================
-
-export const getEmpleadoList = () => axios.get(`${API_URL}/empleados`);
-export const getEmpleadoById = (id) => axios.get(`${API_URL}/empleado/${id}`);
-export const findEmpleado = (query) =>
-  axios.get(`${API_URL}/empleado`, { params: query });
-export const updateEmpleado = (id, empleado) =>
-  axios.put(`${API_URL}/empleados/${id}`, empleado);
-export const createPassword = (id, password) =>
-  axios.put(`${API_URL}/empleadopassword/${id}`, password);
-export const postEmpleado = (empleado) =>
-  axios.post(`${API_URL}/empleado`, empleado);
-export const updateActiveEmpleado = (id) =>
-  axios.patch(`${API_URL}/empleado/${id}`);
-export const updateAdminEmpleado = (id) =>
-  axios.patch(`${API_URL}/empleadoadmin/${id}`);
-export const login = (data) => axios.post(`${API_URL}/login`, data);
-export const verifyToken = (token) =>
-  axios.post(
-    `${API_URL}/verify-token`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+// Interceptor para agregar token si es necesario
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-  );
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-//=====================LAVADOS==============================
+// Servicios por módulo
+export const clientesApi = {
+  getAll: () => api.get('/clientes'),
+  getById: (id) => api.get(`/cliente/${id}`),
+  find: (params) => api.get('/cliente', { params }),
+  create: (data) => api.post('/cliente', data),
+  update: (id, data) => api.put(`/cliente/${id}`, data),
+  updateActive: (id) => api.patch(`/cliente/${id}`),
+  addVehiculo: (data) => api.post('/clientesvehiculo', data),
+};
 
-export const postLavados = (lavado) => axios.post(`${API_URL}/lavado`, lavado);
-export const getLavadoList = () => axios.get(`${API_URL}/lavados`);
-export const findLavado = (query) =>
-  axios.get(`${API_URL}/lavado`, { params: query });
-export const findLavadoByDate = (fecha) =>
-  axios.get(`${API_URL}/lavadosDate`, { params: fecha });
-export const getLavadoById = (id) => axios.get(`${API_URL}/lavados/${id}`);
-export const updateLavado = (id, lavado) =>
-  axios.put(`${API_URL}/lavados/${id}`, lavado);
-export const inicioLavado = (id, lavadores) =>
-  axios.post(`${API_URL}/lavado/${id}/inicio`, lavadores);
-export const finalizarLavado = (id) =>
-  axios.patch(`${API_URL}/lavado/${id}/fin`);
-export const updateActiveLavado = (id) =>
-  axios.patch(`${API_URL}/lavados/${id}`);
-export const notificar = (id) => axios.get(`${API_URL}/notificar/${id}`);
+export const empleadosApi = {
+  getAll: () => api.get('/empleados'),
+  getById: (id) => api.get(`/empleado/${id}`),
+  find: (params) => api.get('/empleado', { params }),
+  create: (data) => api.post('/empleado', data),
+  update: (id, data) => api.put(`/empleados/${id}`, data),
+  updateActive: (id) => api.patch(`/empleado/${id}`),
+  updateAdmin: (id) => api.patch(`/empleadoadmin/${id}`),
+  createPassword: (id, data) => api.put(`/empleadopassword/${id}`, data),
+  login: (credentials) => api.post('/login', credentials),
+  verifyToken: () => api.post('/verify-token'),
+};
+
+export const vehiculosApi = {
+  getAll: () => api.get('/vehiculos'),
+  getById: (id) => api.get(`/vehiculo/${id}`),
+  find: (params) => api.get('/vehiculo', { params }),
+  create: (data) => api.post('/vehiculo', data),
+  update: (id, data) => api.put(`/vehiculo/${id}`, data),
+  updateActive: (id) => api.patch(`/vehiculo/${id}`),
+};
+
+export const tiposLavadoApi = {
+    getAll: () => api.get('/tiposLavados'),
+  getById: (id) => api.get(`/tiposLavado/${id}`),
+  find: (params) => api.get('/tiposLavado', { params }),
+  create: (data) => api.post('/tiposLavado', data),
+  update: (id, data) => api.put(`/tiposLavado/${id}`, data),
+  updateActive: (id) => api.patch(`/tiposLavado/${id}`),
+};
+
+export const lavadosApi = {
+    getAll: () => api.get('/lavados'),
+  getById: (id) => api.get(`/lavados/${id}`),
+  find: (params) => api.get('/lavado', { params }),
+  findByDate: (params) => api.get('/lavadosDate', { params }),
+  create: (data) => api.post('/lavado', data), 
+  update: (id, data) => api.put(`/lavados/${id}`, data),
+  iniciar: (id) => api.post(`/lavado/${id}/inicio`, {}),
+  finalizar: (id) => api.patch(`/lavado/${id}/fin`),
+  updateActive: (id) => api.patch(`/lavados/${id}`),
+  notificar: (id) => api.get(`/notificar/${id}`),
+};
+
+export default api;

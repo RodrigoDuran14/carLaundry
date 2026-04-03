@@ -50,7 +50,7 @@ const findTiposLavado = async (req, res, next) => {
     const tiposLavado = await TiposDeLavadosModel.find(tiposLavadoQuery);
     const tiposLavadoId = tiposLavado.map((t) => t._id);
 
-    res.status(200).send(tiposLavado);
+    res.status(200).send(tiposLavadoId);
   } catch (error) {
     next(error);
   }

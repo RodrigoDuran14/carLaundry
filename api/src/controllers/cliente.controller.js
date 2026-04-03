@@ -153,31 +153,56 @@ const updateActiveClient = async (req, res, next) => {
   }
 };
 
-const addVehiculo = async (req,res,next) =>{
-  const {clienteId,vehiculoId} = req.body
+const addVehiculo = async (req, res, next) => {
+  const { clienteId, vehiculo } = req.body;
+  const { marca, modelo, matricula, color, tipo } = vehiculo; // Desestructurar del objeto vehiculo
 
   try {
-    const vehiculo = await VehiculosModel.findById(vehiculoId);
-    if (!vehiculo) {
-      return res.status(404).json({ error: "El vehículo no existe" });
-    }
-
     const cliente = await ClienteModel.findById(clienteId);
     if (!cliente) {
       return res.status(404).json({ error: "El cliente no existe" });
     }
 
-    if (!cliente.vehiculo.includes(vehiculoId)) {
-      cliente.vehiculo.push(vehiculoId );
+    let nuevoVehiculo;
+
+    // Crear nuevo vehículo
+    nuevoVehiculo = await createVehiculo({
+      marca,
+      modelo,
+      matricula,
+      color,
+      tipo,
+    });
+
+    if (!cliente.vehiculo.includes(nuevoVehiculo._id)) {
+      cliente.vehiculo.push(nuevoVehiculo._id);
       await cliente.save();
-      res.status(200).json({ message: "Vehículo agregado exitosamente al cliente" });
+      res.status(200).json({
+        message: "Vehículo agregado exitosamente al cliente",
+        vehiculo: nuevoVehiculo,
+      });
     } else {
       res.status(400).json({ error: "El vehículo ya está asociado a este cliente" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error al agregar el vehículo al cliente" });
+    next(error);
   }
-}
+};
+
+const createVehiculo = async (vehiculoData) => {
+  const { marca, modelo, matricula, color, tipo } = vehiculoData;
+  
+  const newVehiculo = new VehiculosModel({
+    marca,
+    modelo,
+    matricula,
+    color,
+    tipo,
+  });
+
+  await newVehiculo.save();
+  return newVehiculo;
+};
 
 module.exports = {
   getClientList,
