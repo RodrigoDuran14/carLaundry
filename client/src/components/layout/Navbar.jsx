@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
-import { FaCar, FaUser, FaUsers, FaClipboardList, FaTint, FaSignOutAlt, FaBars } from 'react-icons/fa';
+import { FaCar, FaUser, FaUsers, FaClipboardList, FaTint, FaSignOutAlt, FaBars, FaTachometerAlt } from 'react-icons/fa';
 
 const Navbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const Navbar = ({ onMenuClick }) => {
   };
 
   const navItems = [
-    { path: '/', name: 'Dashboard', icon: <FaCar className="mr-2" /> },
+    { path: '/', name: 'Dashboard', icon: <FaTachometerAlt className="mr-2" /> },
     { path: '/clientes', name: 'Clientes', icon: <FaUser className="mr-2" /> },
     { path: '/empleados', name: 'Empleados', icon: <FaUsers className="mr-2" /> },
     { path: '/vehiculos', name: 'Vehículos', icon: <FaCar className="mr-2" /> },
@@ -37,14 +37,14 @@ const Navbar = ({ onMenuClick }) => {
               <FaBars className="text-2xl" />
             </button>
             
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className=" md:hidden flex items-center space-x-2">
               <FaCar className="text-primary-600 text-2xl" />
               <span className="font-bold text-xl text-gray-800">CarLaundry</span>
             </Link>
           </div>
 
           {/* Desktop menu - visible en md y superiores */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}

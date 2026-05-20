@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   fetchLavados,
   setFilters,
@@ -42,6 +43,8 @@ const LavadosList = () => {
   });
   const [actionLoading, setActionLoading] = useState(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(fetchLavados());
   }, [dispatch]);
@@ -81,8 +84,7 @@ const LavadosList = () => {
   };
 
   const handleViewDetail = (id) => {
-    // Para ver detalles, seguimos usando navegación
-    window.open(`/lavados/${id}`, "_blank");
+    navigate(`/lavados/${id}`);
   };
 
   const handleToggleActive = async (lavado) => {
@@ -90,7 +92,6 @@ const LavadosList = () => {
     setActionLoading(lavadoId);
     try {
       await dispatch(toggleActiveLavado(lavadoId)).unwrap();
-      toast.success(lavado.activo ? "Lavado archivado" : "Lavado restaurado");
       dispatch(fetchLavados());
     } catch (error) {
       toast.error("Error al cambiar estado");
